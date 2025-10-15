@@ -17,3 +17,17 @@
 - [ ] 重新启动程序选择 Transform 作为第一个页面进入后进行操作会出现黑屏问题
 - [ ] NavigatorBar 界面样式需确认(安卓demo无法运行成功)
 - 待更新
+
+## 0.77
+> [!TIP] [ ] 表示未完成任务 [x] 表示已完成任务
+- [ ] 在0.72基础上的 style 未定义: 需替换 TextPropTypes, ImagePropTypes, TextInputPropTypes
+- [ ] 报错：TeaNavigator uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.
+- [ ] 报错：NavigationBar uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.
+- [ ] 报错：TopView uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead
+- [ ] 报错：TopView uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.
+- [ ] 报错：Home uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.
+- [ ] 报错：NavigationTitle uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.
+- [ ] 报错：Component "RCTView" contains the string ref "containerView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
+- [ ] 报错：Component "SwipeTouchableOpacity" contains the string ref "animatedView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
+- [ ] 点击 home 界面的任意条目报错：The root component is NOT TeaNavigator, then you can not use BasePage.navigator.
+- [ ] 点击 home 界面的任意条目报错：TypeError: Cannot read property 'push' of null
