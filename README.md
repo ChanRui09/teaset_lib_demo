@@ -18,9 +18,9 @@
 - [ ] NavigatorBar 界面样式需确认(安卓demo无法运行成功)
 - 待更新
 
-## 0.77
+## 0.77 (基于0.72)
 > [!TIP] [ ] 表示未完成任务 [x] 表示已完成任务
-- [ ] 在0.72基础上的 style 未定义: 需替换 TextPropTypes, ImagePropTypes, TextInputPropTypes
+- [x] [在0.72基础上的 style 未定义: 需替换 TextPropTypes, ImagePropTypes, TextInputPropTypes](https://github.com/ChanRui09/teaset_lib_demo/commit/ff6d5b34b1f30e6e1be9c274bca36840fef6c71e)
 - [ ] 报错：TeaNavigator uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.
 - [ ] 报错：NavigationBar uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.
 - [ ] 报错：TopView uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead
@@ -31,3 +31,4 @@
 - [ ] 报错：Component "SwipeTouchableOpacity" contains the string ref "animatedView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
 - [ ] 点击 home 界面的任意条目报错：The root component is NOT TeaNavigator, then you can not use BasePage.navigator.
 - [ ] 点击 home 界面的任意条目报错：TypeError: Cannot read property 'push' of null
+- 待更新
