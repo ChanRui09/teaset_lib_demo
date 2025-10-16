@@ -17,18 +17,21 @@
 - [ ] 重新启动程序选择 Transform 作为第一个页面进入后进行操作会出现黑屏问题
 - [ ] NavigatorBar 界面样式需确认(安卓demo无法运行成功)
 - 待更新
-
 ## 0.77 (基于0.72)
 > [!TIP] [ ] 表示未完成任务 [x] 表示已完成任务
 - [x] [在0.72基础上的 style 未定义: 需替换 TextPropTypes, ImagePropTypes, TextInputPropTypes](https://github.com/ChanRui09/teaset_lib_demo/commit/ff6d5b34b1f30e6e1be9c274bca36840fef6c71e)
-- [ ] 报错：TeaNavigator uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.
-- [ ] 报错：NavigationBar uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.
-- [ ] 报错：TopView uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead
-- [ ] 报错：TopView uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.
-- [ ] 报错：Home uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.
-- [ ] 报错：NavigationTitle uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.
-- [ ] 报错：Component "RCTView" contains the string ref "containerView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
-- [ ] 报错：Component "SwipeTouchableOpacity" contains the string ref "animatedView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
-- [ ] 点击 home 界面的任意条目报错：The root component is NOT TeaNavigator, then you can not use BasePage.navigator.
-- [ ] 点击 home 界面的任意条目报错：TypeError: Cannot read property 'push' of null
+- [x] [适配 0.77 过程中的 React.createContext() 报错](https://github.com/ChanRui09/teaset_lib_demo/commit/ed2b30dce1784e873f4b806abfa16416396edfa2)  
+(1) TeaNavigator uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.  
+(2) NavigationBar uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.  
+(3) TopView uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead
+(4) TopView uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.  
+(5) Home uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.  
+(6) NavigationTitle uses the legacy contextTypes API which is no longer supported. Use React.createContext() with static contextType instead.  
+- [x] 点击 home 界面的任意条目报错：The root component is NOT TeaNavigator, then you can not use BasePage.navigator.
+- [x] 点击 home 界面的任意条目报错：TypeError: Cannot read property 'push' of null
+> [!TIP] 上面两条错误是由于 React.createContext() 报错导致的
+- [ ] 库中的 createRef() 报错
+- [ ] demo中的 createRef() 报错  
+(1) Component "RCTView" contains the string ref "containerView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.  
+(2) Component "SwipeTouchableOpacity" contains the string ref "animatedView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
 - 待更新
