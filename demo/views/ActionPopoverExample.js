@@ -15,6 +15,11 @@ export default class ActionPopoverExample extends NavigationPage {
     showBackButton: true,
   };
 
+  constructor(props) {
+    super(props);
+    this.apButtonRef = React.createRef();
+  }
+
   show(view) {
     view.measure((x, y, width, height, pageX, pageY) => {
       let items = [
@@ -29,7 +34,7 @@ export default class ActionPopoverExample extends NavigationPage {
   renderPage() {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Button title='Show' ref='apButton' onPress={() => this.show(this.refs['apButton'])} />
+        <Button title='Show' ref={this.apButtonRef} onPress={() => this.show(this.apButtonRef.current)} />
       </View>
     );
   }

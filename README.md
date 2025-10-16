@@ -30,7 +30,7 @@
 - [x] 点击 home 界面的任意条目报错：The root component is NOT TeaNavigator, then you can not use BasePage.navigator.
 - [x] 点击 home 界面的任意条目报错：TypeError: Cannot read property 'push' of null
 > [!TIP] 上面两条错误是由于 React.createContext() 报错导致的
-- [ ] 库中的 createRef() 报错
+- [x] [库中的 createRef() 报错 - 字符串 refs 修改为 React.createRef()](https://github.com/ChanRui09/teaset_lib_demo/commit/5192ff367ab61909c00411033f59dcce591f0803)
 - [ ] demo中的 createRef() 报错  
 (1) Component "RCTView" contains the string ref "containerView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.  
 (2) Component "SwipeTouchableOpacity" contains the string ref "animatedView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.

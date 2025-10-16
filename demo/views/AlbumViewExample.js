@@ -29,10 +29,11 @@ export default class AlbumViewExample extends NavigationPage {
       require('../images/teaset3_s.jpg'),
       require('../images/faircup_s.jpg'),
     ];
+    this.imageRefs = {};
   }
 
   onImagePress(index) {
-    let pressView = this.refs['it' + index];
+    let pressView = this.imageRefs['it' + index];
     pressView.measure((x, y, width, height, pageX, pageY) => {
       let overlayView = (
         <Overlay.PopView
@@ -65,7 +66,7 @@ export default class AlbumViewExample extends NavigationPage {
         <View style={{padding: 20, flexDirection:'row', flexWrap:'wrap', alignItems:'flex-start'}}>
           {this.thumbs.map((item, index) => (
             <View style={{width: 100, height: 100, padding: 10}} key={index}>
-              <TouchableOpacity style={{flex: 1}} ref={'it' + index} onPress={() => this.onImagePress(index)}>
+              <TouchableOpacity style={{flex: 1}} ref={ref => this.imageRefs['it' + index] = ref} onPress={() => this.onImagePress(index)}>
                 <Image style={{width: null, height: null, flex: 1}} source={item} resizeMode='cover' />
               </TouchableOpacity>
             </View>

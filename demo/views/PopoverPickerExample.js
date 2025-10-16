@@ -28,6 +28,8 @@ export default class PopoverPickerExample extends NavigationPage {
       'Pekoe',
       'Tieguanyin',
     ];
+    this.defaultRowRef = React.createRef();
+    this.modalRowRef = React.createRef();
     Object.assign(this.state, {
       selectedIndex: null,
       modalSelectedIndex: null,
@@ -64,8 +66,8 @@ export default class PopoverPickerExample extends NavigationPage {
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
-        <ListRow title='Default' detail={selected} ref='defaultRow' onPress={() => this.show(this.refs['defaultRow'])} topSeparator='full' />
-        <ListRow title='Modal' detail={modalSelected} ref='modalRow' onPress={() => this.showModal(this.refs['modalRow'])} bottomSeparator='full' />
+        <ListRow title='Default' detail={selected} ref={this.defaultRowRef} onPress={() => this.show(this.defaultRowRef.current)} topSeparator='full' />
+        <ListRow title='Modal' detail={modalSelected} ref={this.modalRowRef} onPress={() => this.showModal(this.modalRowRef.current)} bottomSeparator='full' />
       </ScrollView>
     );
   }

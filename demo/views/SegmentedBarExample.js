@@ -42,6 +42,8 @@ export default class SegmentedBarExample extends NavigationPage {
     this.indicatorTypeItems = ['none', 'boxWidth', 'itemWidth', 'customWidth'];
     this.indicatorPositionItems = ['top', 'bottom'];
 
+    this.carouselRef = React.createRef();
+
     Object.assign(this.state, {
       justifyItem: 'fixed',
       indicatorType: 'itemWidth',
@@ -56,8 +58,8 @@ export default class SegmentedBarExample extends NavigationPage {
   onSegmentedBarChange(index) {
     if (index != this.state.activeIndex) {
       this.setState({activeIndex: index});
-      if (this.refs.carousel) {
-        this.refs.carousel.scrollToPage(index, false);
+      if (this.carouselRef.current) {
+        this.carouselRef.current.scrollToPage(index, false);
       }
     }
   }
@@ -118,7 +120,7 @@ export default class SegmentedBarExample extends NavigationPage {
           carousel={false}
           startIndex={activeIndex}
           cycle={false}
-          ref='carousel'
+          ref={this.carouselRef}
           onChange={index => this.onCarouselChange(index)}
         >
           {barItems.map((item, index) => (

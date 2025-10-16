@@ -17,6 +17,23 @@ export default class OverlayExample extends NavigationPage {
 
   constructor(props) {
     super(props);
+    // Checkbox refs (not used but defined for completeness)
+    this.blackRef = React.createRef();
+    this.shadowRef = React.createRef();
+    this.showArrowRef = React.createRef();
+    // Button refs for popover positioning
+    this.downstartRef = React.createRef();
+    this.downcenterRef = React.createRef();
+    this.downendRef = React.createRef();
+    this.rightstartRef = React.createRef();
+    this.leftstartRef = React.createRef();
+    this.rightcenterRef = React.createRef();
+    this.leftcenterRef = React.createRef();
+    this.rightendRef = React.createRef();
+    this.leftendRef = React.createRef();
+    this.upstartRef = React.createRef();
+    this.upcenterRef = React.createRef();
+    this.upendRef = React.createRef();
     Object.assign(this.state, {
       black: true,
       shadow: false,
@@ -169,32 +186,32 @@ export default class OverlayExample extends NavigationPage {
           detail={
             <View>
               <View style={{paddingTop: 16, paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Checkbox title='Black' ref='black' checked={this.state.black} onChange={value => this.setState({black: value})} />
-                <Checkbox title='Shadow' ref='shadow' checked={this.state.shadow} onChange={value => this.setState({shadow: value})} />
-                <Checkbox title='Show arrow' ref='showArrow' checked={this.state.showArrow} onChange={value => this.setState({showArrow: value})} />
+                <Checkbox title='Black' ref={this.blackRef} checked={this.state.black} onChange={value => this.setState({black: value})} />
+                <Checkbox title='Shadow' ref={this.shadowRef} checked={this.state.shadow} onChange={value => this.setState({shadow: value})} />
+                <Checkbox title='Show arrow' ref={this.showArrowRef} checked={this.state.showArrow} onChange={value => this.setState({showArrow: value})} />
               </View>
 
               <View style={{paddingTop: 8, flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Button title='down start' ref='downstart' onPress={() => this.showPopover(this.refs['downstart'], 'down', 'start')} />
-                <Button title='down center' ref='downcenter' onPress={() => this.showPopover(this.refs['downcenter'], 'down', 'center')} />
-                <Button title='down end' ref='downend' onPress={() => this.showPopover(this.refs['downend'], 'down', 'end')} />
+                <Button title='down start' ref={this.downstartRef} onPress={() => this.showPopover(this.downstartRef.current, 'down', 'start')} />
+                <Button title='down center' ref={this.downcenterRef} onPress={() => this.showPopover(this.downcenterRef.current, 'down', 'center')} />
+                <Button title='down end' ref={this.downendRef} onPress={() => this.showPopover(this.downendRef.current, 'down', 'end')} />
               </View>
               <View style={{paddingTop: 8, flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Button title='right start' ref='rightstart' onPress={() => this.showPopover(this.refs['rightstart'], 'right', 'start')} />
-                <Button title='left start' ref='leftstart' onPress={() => this.showPopover(this.refs['leftstart'], 'left', 'start')} />
+                <Button title='right start' ref={this.rightstartRef} onPress={() => this.showPopover(this.rightstartRef.current, 'right', 'start')} />
+                <Button title='left start' ref={this.leftstartRef} onPress={() => this.showPopover(this.leftstartRef.current, 'left', 'start')} />
               </View>
               <View style={{paddingTop: 8, flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Button title='right center' ref='rightcenter' onPress={() => this.showPopover(this.refs['rightcenter'], 'right', 'center')} />
-                <Button title='left center' ref='leftcenter' onPress={() => this.showPopover(this.refs['leftcenter'], 'left', 'center')} />
+                <Button title='right center' ref={this.rightcenterRef} onPress={() => this.showPopover(this.rightcenterRef.current, 'right', 'center')} />
+                <Button title='left center' ref={this.leftcenterRef} onPress={() => this.showPopover(this.leftcenterRef.current, 'left', 'center')} />
               </View>
               <View style={{paddingTop: 8, flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Button title='right end' ref='rightend' onPress={() => this.showPopover(this.refs['rightend'], 'right', 'end')} />
-                <Button title='left end' ref='leftend' onPress={() => this.showPopover(this.refs['leftend'], 'left', 'end')} />
+                <Button title='right end' ref={this.rightendRef} onPress={() => this.showPopover(this.rightendRef.current, 'right', 'end')} />
+                <Button title='left end' ref={this.leftendRef} onPress={() => this.showPopover(this.leftendRef.current, 'left', 'end')} />
               </View>
               <View style={{paddingTop: 8, flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Button title='up start' ref='upstart' onPress={() => this.showPopover(this.refs['upstart'], 'up', 'start')} />
-                <Button title='up center' ref='upcenter' onPress={() => this.showPopover(this.refs['upcenter'], 'up', 'center')} />
-                <Button title='up end' ref='upend' onPress={() => this.showPopover(this.refs['upend'], 'up', 'end')} />
+                <Button title='up start' ref={this.upstartRef} onPress={() => this.showPopover(this.upstartRef.current, 'up', 'start')} />
+                <Button title='up center' ref={this.upcenterRef} onPress={() => this.showPopover(this.upcenterRef.current, 'up', 'center')} />
+                <Button title='up end' ref={this.upendRef} onPress={() => this.showPopover(this.upendRef.current, 'up', 'end')} />
               </View>
             </View>
           }

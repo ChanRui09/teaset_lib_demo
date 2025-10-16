@@ -20,6 +20,7 @@ export default class PanResponderExample extends NavigationPage {
     this.createPanResponder();
     this.prevTouches = [];
     this.layout = null;
+    this.viewRef = React.createRef();
     Object.assign(this.state, {
       translateX: 0,
       translateY: 0,
@@ -111,7 +112,7 @@ export default class PanResponderExample extends NavigationPage {
       let scaleRate = distance1 / distance0;
       let scalePointX = (prevTouches[1].pageX + prevTouches[0].pageX) / 2;
       let scalePointY = (prevTouches[1].pageY + prevTouches[0].pageY) / 2;
-      this.refs['view'].measure((x, y, width, height, pageX, pageY) => {
+      this.viewRef.current.measure((x, y, width, height, pageX, pageY) => {
         //view center point position
         let viewCenterX = x + width / 2;
         let viewCenterY = y + height / 2;
@@ -147,7 +148,7 @@ export default class PanResponderExample extends NavigationPage {
               overflow: 'hidden',
             }}
             onLayout={e => this.layout = e.nativeEvent.layout}
-            ref='view'
+            ref={this.viewRef}
             {...this.panResponder.panHandlers}
           >
             <Input style={{width: 200, height: 30}} />
