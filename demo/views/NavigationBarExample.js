@@ -19,7 +19,7 @@ export default class NavigationBarExample extends NavigationPage {
   constructor(props) {
     super(props);
 
-    this.typeItems = ['Auto', 'iOS', 'Android'];
+    this.typeItems = ['Auto', 'iOS', 'Android', 'Harmony'];
     this.titleItems = ['String', 'Custom'];
     this.leftViewItems = ['None', 'Back button', 'Link button', 'Icon button', 'Two icon button'];
     this.rightViewItems = ['None', 'Link button', 'Icon button', 'Two icon button'];
