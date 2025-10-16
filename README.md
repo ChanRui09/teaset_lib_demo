@@ -20,7 +20,7 @@
 ## 0.77 (基于0.72)
 > [!TIP] [ ] 表示未完成任务 [x] 表示已完成任务
 - [x] [在0.72基础上的 style 未定义: 需替换 TextPropTypes, ImagePropTypes, TextInputPropTypes](https://github.com/ChanRui09/teaset_lib_demo/commit/ff6d5b34b1f30e6e1be9c274bca36840fef6c71e)
-- [x] [适配 0.77 过程中的 React.createContext() 报错](https://github.com/ChanRui09/teaset_lib_demo/commit/ed2b30dce1784e873f4b806abfa16416396edfa2)  
+- [x] [适配 0.77 过程中的 React.createContext() 报错 - 从 Legacy Context API 到 React 18 Context API 的迁移](https://github.com/ChanRui09/teaset_lib_demo/commit/ed2b30dce1784e873f4b806abfa16416396edfa2)  
 (1) TeaNavigator uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.  
 (2) NavigationBar uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead.  
 (3) TopView uses the legacy childContextTypes API which is no longer supported. Use React.createContext() instead
