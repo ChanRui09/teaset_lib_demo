@@ -20,12 +20,13 @@
 - [x] **Overlay 界面的 Pop zoom out 和 Pop zoom in 效果异常 (在适配 0.77 的过程中已经修复)**  
 - [x] [NavigatorBar 界面 type 选择 auto 时因缺少 harmony 平台判断不可用 - Invalid prop type of value harmony supplied to NavigationBar, expected one of ["auto","ios","android"]](https://github.com/ChanRui09/teaset_lib_demo/commit/2906c01c9839118ba9d4541e4eddbeea194161e6)  
 - [x] [适配 0.77 过程中 NavigatorBar 界面 Tint color 选择 none 时报错：TypeError: Cannot read property 'tintColor' of null](https://github.com/ChanRui09/teaset_lib_demo/commit/be482960e36c0232257859e2501c89ca18dc4183)  
+- [x] Home 界面有二次进入问题，其余导航正常
+- [x] Theme 设置主题后 home 界面不生效，只在子页面生效
+- [x] **SegmentBar 在 Justify item 为 scrollable 的情况下，配置 indicator type 切换 itemWidth 和 boxWidth无变化(像是使用了boxWidth)(安卓demo效果一致)**
+- [x] Wheel 时间不对（中间的月份）
+- [x] NavigationBar 设置 Status bar hidden 隔一次不生效
 - [ ] 0.72 的 demo 中 Overlay 页面的 Popover 下的 shadow 属性异常(0.72 和 0.77 都不支持)
-- [ ] Home 界面有二次进入问题，其余导航正常
-- [ ] Theme 设置主题后 home 界面不生效，只在子页面生效
-- [ ] SegmentBar 在 Justify item 为 scrollable 的情况下，配置 indicator type 切换 itemWidth 和 boxWidth无变化(像是使用了boxWidth)
-- [ ] Wheel 时间不对（中间的月份）
-- [ ] NavigationBar 设置 Status bar hidden 隔一次不生效
+- [ ] **NavigationBar 的 statusbar 控制逻辑异常(设置隐藏 statusBar 之后，操作 hidden、 custom background 时，状态栏又会显示)**
 - 待更新
 ## 0.77 (基于0.72)
 > [!TIP] [ ] 表示未完成 [x] 表示已完成
@@ -45,11 +46,12 @@
 (1) Component "RCTView" contains the string ref "containerView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.  
 (2) Component "SwipeTouchableOpacity" contains the string ref "animatedView". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.  
 - [x] [**demo 中进入任意界面，操作可交互的组件基本都存在黑屏问题(通过重写TeaNavigator.js修复,需配置 @react-native-oh-tpl/react-native-screens)**](https://github.com/ChanRui09/teaset_lib_demo/commit/6271593572ab70b3bce04ae1b6abdbcffe6c6e70)
-- [ ] Theme 设置主题后 home 界面不生效，只在子页面生效
-- [ ] SegmentBar 在 Justify item 为 scrollable 的情况下，配置 indicator type 切换 itemWidth 和 boxWidth无变化（看似使用了boxWidth）
-- [ ] NavigationBar 设置 Status bar hidden 隔一次不生效
-- [ ] 进入TransformView 界面报错：Component "TransformView" contains the string ref "view". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
-- [ ] TabView 界面 type 选择 carousel 报错：Component "RCTView" contains the string ref "carousel". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
+- [x] Theme 设置主题后 home 界面不生效，只在子页面生效
+- [x] **SegmentBar 在 Justify item 为 scrollable 的情况下，配置 indicator type 切换 itemWidth 和 boxWidth无变化(像是使用了boxWidth)(安卓demo效果一致)**
+- [x] NavigationBar 设置 Status bar hidden 隔一次不生效
+- [x] 进入TransformView 界面报错：Component "TransformView" contains the string ref "view". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
+- [x] TabView 界面 type 选择 carousel 报错：Component "RCTView" contains the string ref "carousel". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
 - [ ] 0.77 的 demo 中 Overlay 页面的 Popover 下的 shadow 属性异常(0.72 和 0.77 都不支持)
 - [ ] 0.77 存在些许闪屏问题
+- [ ] **NavigationBar 的 statusbar 控制逻辑异常(设置隐藏 statusBar 之后，操作 hidden、 custom background 时，状态栏又会显示)**
 - 待更新
