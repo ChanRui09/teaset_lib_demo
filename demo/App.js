@@ -16,6 +16,7 @@ export default {
   title: 'teaset',
   documentationURL: 'teaset',
   description: '',
+  hideTopTitleBar: true,
   examples: [
     {
       title: 'teaset',
