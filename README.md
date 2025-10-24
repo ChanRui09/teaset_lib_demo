@@ -25,8 +25,9 @@
 - [x] **SegmentBar 在 Justify item 为 scrollable 的情况下，配置 indicator type 切换 itemWidth 和 boxWidth无变化(像是使用了boxWidth)(安卓demo效果一致)**
 - [x] Wheel 时间不对（中间的月份）
 - [x] NavigationBar 设置 Status bar hidden 隔一次不生效
+- [x] [**NavigationBar 的 statusbar 控制逻辑异常(设置隐藏 statusBar 之后，操作 hidden、 custom background 时，状态栏又会显示)**](https://github.com/ChanRui09/teaset_lib_demo/commit/881f8061fb98ec090d63c3e4a41d0095d49788bb)
 - [ ] 0.72 的 demo 中 Overlay 页面的 Popover 下的 shadow 属性异常(0.72 和 0.77 都不支持)
-- [ ] **NavigationBar 的 statusbar 控制逻辑异常(设置隐藏 statusBar 之后，操作 hidden、 custom background 时，状态栏又会显示)**
+- [ ] **0.72 在切换页面时状态栏闪烁**
 - 待更新
 ## 0.77 (基于0.72)
 > [!TIP] [ ] 表示未完成 [x] 表示已完成
@@ -51,7 +52,7 @@
 - [x] NavigationBar 设置 Status bar hidden 隔一次不生效
 - [x] 进入TransformView 界面报错：Component "TransformView" contains the string ref "view". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
 - [x] TabView 界面 type 选择 carousel 报错：Component "RCTView" contains the string ref "carousel". Support for string refs will be removed in a future major release. We recommend using useRef() or createRef() instead.
+- [x] [**NavigationBar 的 statusbar 控制逻辑异常(设置隐藏 statusBar 之后，操作 hidden、 custom background 时，状态栏又会显示)**](https://github.com/ChanRui09/teaset_lib_demo/commit/881f8061fb98ec090d63c3e4a41d0095d49788bb)
 - [ ] 0.77 的 demo 中 Overlay 页面的 Popover 下的 shadow 属性异常(0.72 和 0.77 都不支持)
-- [ ] 0.77 存在些许闪屏问题
-- [ ] **NavigationBar 的 statusbar 控制逻辑异常(设置隐藏 statusBar 之后，操作 hidden、 custom background 时，状态栏又会显示)**
+- [ ] 0.77 存在些许闪屏问题, **AlbumView 界面点击图片缩略图，闪屏尤为明显**
 - 待更新
