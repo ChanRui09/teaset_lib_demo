@@ -26,6 +26,7 @@ export default class NavigationBarExample extends NavigationPage {
     this.bgColorItems = ['Default', 'Custom'];
     this.tintColorItems = ['Default', 'Custom', 'None'];
     this.statusBarStyleItems = ['Default', 'Light Content', 'Dark Content'];
+    this.statusBarColorItems = ['Default', 'Custom'];
 
     Object.assign(this.state, {
       type: 'iOS',
@@ -39,6 +40,9 @@ export default class NavigationBarExample extends NavigationPage {
       animated: true,
       statusBarStyle: 'Light Content',
       statusBarHidden: false,
+      titleStyle: false,
+      statusBarColor: 'Default',
+      statusBarInsets: true,
     });
   }
 
@@ -70,6 +74,18 @@ export default class NavigationBarExample extends NavigationPage {
       case 'Light Content': return 'light-content';
       case 'Dark Content': return 'dark-content';
     }
+  }
+
+  get statusBarColor() {
+    switch(this.state.statusBarColor) {
+      case 'Default': return undefined;
+      case 'Custom': return '#ff5722';
+    }
+  }
+
+  get titleStyle() {
+    if (!this.state.titleStyle) return undefined;
+    return {color: '#ff5722', fontSize: 20, fontWeight: 'bold'};
   }
 
   renderLeftRightView(item) {
@@ -131,12 +147,13 @@ export default class NavigationBarExample extends NavigationPage {
   }
 
   renderNavigationBar() {
-    let {customBackground, hidden, animated, statusBarHidden} = this.state;
+    let {customBackground, hidden, animated, statusBarHidden, statusBarInsets} = this.state;
     return (
       <NavigationBar
         style={this.style}
         type={this.type}
         title={this.renderNavigationTitle()}
+        titleStyle={this.titleStyle}
         leftView={this.renderNavigationLeftView()}
         rightView={this.renderNavigationRightView()}
         tintColor={this.tintColor}
@@ -146,13 +163,15 @@ export default class NavigationBarExample extends NavigationPage {
         hidden={hidden}
         animated={animated}
         statusBarStyle={this.statusBarStyle}
+        statusBarColor={this.statusBarColor}
         statusBarHidden={statusBarHidden}
+        statusBarInsets={statusBarInsets}
         />
     );
   }
 
   renderPage() {
-    let {type, title, leftView, rightView, bgColor, tintColor, customBackground, hidden, animated, statusBarStyle, statusBarHidden} = this.state;
+    let {type, title, leftView, rightView, bgColor, tintColor, customBackground, hidden, animated, statusBarStyle, statusBarHidden, titleStyle, statusBarColor, statusBarInsets} = this.state;
     return (
       <ScrollView style={{flex: 1, paddingTop: Theme.statusBarHeight}}>
         <View style={{height: Theme.navBarContentHeight, alignItems: 'center', justifyContent: 'center'}}>
@@ -171,6 +190,10 @@ export default class NavigationBarExample extends NavigationPage {
           value={title}
           items={this.titleItems}
           onSelected={(item, index) => this.setState({title: item})}
+          />
+        <ListRow
+          title='Title style'
+          detail={<Switch value={titleStyle} onValueChange={value => this.setState({titleStyle: value})} />}
           />
         <SelectRow
           title='Left view'
@@ -217,9 +240,19 @@ export default class NavigationBarExample extends NavigationPage {
           onSelected={(item, index) => this.setState({statusBarStyle: item})}
           topSeparator='full'
           />
+        <SelectRow
+          title='Status bar color'
+          value={statusBarColor}
+          items={this.statusBarColorItems}
+          onSelected={(item, index) => this.setState({statusBarColor: item})}
+          />
         <ListRow
           title='Status bar hidden'
           detail={<Switch value={statusBarHidden} onValueChange={value => this.setState({statusBarHidden: value})} />}
+          />
+        <ListRow
+          title='Status bar insets (iOS)'
+          detail={<Switch value={statusBarInsets} onValueChange={value => this.setState({statusBarInsets: value})} />}
           bottomSeparator='full'
           />
       </ScrollView>
