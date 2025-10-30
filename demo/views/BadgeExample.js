@@ -43,6 +43,23 @@ export default class BadgeExample extends NavigationPage {
         } />
         <ListRow title='Type dot' detail={<Badge type='dot' />} bottomSeparator='full' />
         <View style={{height: 20}} />
+        <ListRow title='CountStyle' detail={
+          <View style={{flexDirection: 'row'}}>
+            <Badge count={6} countStyle={{color: '#fff', fontSize: 16, fontWeight: 'bold'}} />
+            <View style={{width: 4}} />
+            <Badge type='square' count={88} countStyle={{color: '#ff0', fontSize: 12}} />
+          </View>
+        } topSeparator='full' />
+        <ListRow title='MaxCount' detail={
+          <View style={{flexDirection: 'row'}}>
+            <Badge count={100} maxCount={99} />
+            <View style={{width: 4}} />
+            <Badge count={500} maxCount={200} />
+            <View style={{width: 4}} />
+            <Badge count={1000} maxCount={999} />
+          </View>
+        } bottomSeparator='full' />
+        <View style={{height: 20}} />
         <ListRow title='Custom' detail={
           <View style={{flexDirection: 'row'}}>
             <Badge style={{backgroundColor: '#5bc0de'}} type='square' count='券' />

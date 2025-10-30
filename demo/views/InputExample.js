@@ -24,6 +24,7 @@ export default class InputExample extends NavigationPage {
       valueReadonly: 'Readonly',
       valueDisable: 'Disable',
       valueCustom: null,
+      valueCallback: '',
     });
   }
 
@@ -73,6 +74,28 @@ export default class InputExample extends NavigationPage {
             value={this.state.valueDisable}
             />
         } bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='underlineColorAndroid' detail={
+          <Input
+            style={{width: 200}}
+            placeholder='Android underline'
+            underlineColorAndroid='#ff5722'
+            />
+        } topSeparator='full' bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='onChangeText callback' detail={
+          <Input
+            style={{width: 200}}
+            placeholder='Type here'
+            value={this.state.valueCallback}
+            onChangeText={text => {
+              this.setState({valueCallback: text});
+              if (text.length >= 5) {
+                alert(`Input text: ${text}`);
+              }
+            }}
+            />
+        } topSeparator='full' bottomSeparator='full' />
         <View style={{height: 20}} />
         <ListRow title='Custom' detail={
           <Input

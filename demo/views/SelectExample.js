@@ -50,11 +50,14 @@ export default class SelectExample extends NavigationPage {
       valueReadonly: 'Readonly',
       valueDisable: null,
       valueCustom: null,
+      valueIconTintColor: null,
+      valuePlaceholderColor: null,
+      valueCallback: null,
     });
   }
 
   renderPage() {
-    let {valueSM, valueMD, valueLG, valueAuto, valuePull, valuePopover, valueReadonly, valueDisable, valueCustom} = this.state;
+    let {valueSM, valueMD, valueLG, valueAuto, valuePull, valuePopover, valueReadonly, valueDisable, valueCustom, valueIconTintColor, valuePlaceholderColor, valueCallback} = this.state;
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
@@ -180,6 +183,51 @@ export default class SelectExample extends NavigationPage {
               onSelected={(item, index) => this.setState({valueCustom: item.value})}
               />
           } topSeparator='full' bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow
+          title='IconTintColor'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueIconTintColor}
+              items={this.items}
+              iconTintColor='#ff5722'
+              placeholder='Select item'
+              pickerTitle='IconTintColor'
+              onSelected={(item, index) => this.setState({valueIconTintColor: item})}
+              />
+          } topSeparator='full' />
+        <ListRow
+          title='PlaceholderTextColor'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valuePlaceholderColor}
+              items={this.items}
+              placeholder='Placeholder with color'
+              placeholderTextColor='#2196f3'
+              pickerTitle='PlaceholderTextColor'
+              onSelected={(item, index) => this.setState({valuePlaceholderColor: item})}
+              />
+          } />
+        <ListRow
+          title='OnSelected callback'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueCallback}
+              items={this.items}
+              placeholder='Select item'
+              pickerTitle='OnSelected callback'
+              onSelected={(item, index) => {
+                this.setState({valueCallback: item});
+                alert(`Selected: ${item} (index: ${index})`);
+              }}
+              />
+          } bottomSeparator='full' />
       </ScrollView>
     );
   }

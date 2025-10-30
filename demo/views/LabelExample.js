@@ -30,6 +30,10 @@ export default class LabelExample extends NavigationPage {
         <ListRow title='Size lg' detail={<Label text='Label' size='lg'/>} />
         <ListRow title='Size xl' detail={<Label text='Label' size='xl'/>} bottomSeparator='full' />
         <View style={{height: 20}} />
+        <ListRow title='numberOfLines 1' detail={<Label style={{width: 200}} text='This is a very long text that will be truncated to one line' numberOfLines={1} />} topSeparator='full' />
+        <ListRow title='numberOfLines 2' detail={<Label style={{width: 200}} text='This is a very long text that will be truncated to two lines when it exceeds the width' numberOfLines={2} />} />
+        <ListRow title='numberOfLines 3' detail={<Label style={{width: 200}} text='This is a very long text that will be truncated to three lines when it exceeds the width limit of the container' numberOfLines={3} />} bottomSeparator='full' />
+        <View style={{height: 20}} />
         <ListRow title='Custom' detail={<Label style={{color: '#8a6d3b', fontSize: 16}} text='Custom' />} topSeparator='full' bottomSeparator='full' />
       </ScrollView>
     );

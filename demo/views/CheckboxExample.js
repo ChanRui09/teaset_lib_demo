@@ -24,6 +24,10 @@ export default class CheckboxExample extends NavigationPage {
       checkedEmpty: false,
       checkedDisable: true,
       checkedCustom: false,
+      checkedDefault: false,
+      checkedIconStyle: false,
+      checkedHitSlop: false,
+      checkedOnChange: false,
     });
   }
 
@@ -68,6 +72,42 @@ export default class CheckboxExample extends NavigationPage {
             disabled={true}
             checked={this.state.checkedDisable}
             onChange={value => this.setState({checkedDisable: value})}
+            />
+        } bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='defaultChecked' detail={
+          <Checkbox
+            title='Default Checked'
+            defaultChecked={true}
+            />
+        } topSeparator='full' />
+        <ListRow title='checkedIconStyle' detail={
+          <Checkbox
+            title='Icon Style'
+            checkedIcon={require('../icons/smile.png')}
+            checkedIconStyle={{tintColor: '#ff5722', width: 20, height: 20}}
+            uncheckedIcon={require('../icons/smile.png')}
+            uncheckedIconStyle={{tintColor: '#ccc', width: 20, height: 20}}
+            checked={this.state.checkedIconStyle}
+            onChange={value => this.setState({checkedIconStyle: value})}
+            />
+        } />
+        <ListRow title='hitSlop' detail={
+          <Checkbox
+            title='Large Touch Area'
+            hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+            checked={this.state.checkedHitSlop}
+            onChange={value => this.setState({checkedHitSlop: value})}
+            />
+        } />
+        <ListRow title='onChange alert' detail={
+          <Checkbox
+            title='Click Me'
+            checked={this.state.checkedOnChange}
+            onChange={value => {
+              this.setState({checkedOnChange: value});
+              alert(`Checkbox ${value ? 'checked' : 'unchecked'}!`);
+            }}
             />
         } bottomSeparator='full' />
         <View style={{height: 20}} />

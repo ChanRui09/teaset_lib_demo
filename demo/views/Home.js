@@ -35,6 +35,9 @@ import PopoverPickerExample from './PopoverPickerExample';
 import MenuExample from './MenuExample';
 import DrawerExample from './DrawerExample';
 import ModalIndicatorExample from './ModalIndicatorExample';
+import TeaNavigatorExample from './TeaNavigatorExample';
+import BasePageExample from './BasePageExample';
+import NavigationPageExample from './NavigationPageExample';
 
 export default class Home extends NavigationPage {
 
@@ -75,7 +78,10 @@ export default class Home extends NavigationPage {
         <ListRow title='PopoverPicker' detail='气泡选择器' onPress={() => this.navigator.push({view: <PopoverPickerExample />})} />
         <ListRow title='Menu' detail='菜单' onPress={() => this.navigator.push({view: <MenuExample />})} />
         <ListRow title='Drawer' detail='抽屉' onPress={() => this.navigator.push({view: <DrawerExample />})} />
-        <ListRow title='ModalIndicator' detail='模态指示器' onPress={() => this.navigator.push({view: <ModalIndicatorExample />})} bottomSeparator='full' />
+        <ListRow title='ModalIndicator' detail='模态指示器' onPress={() => this.navigator.push({view: <ModalIndicatorExample />})} />
+        <ListRow title='TeaNavigator' detail='Tea导航器' onPress={() => this.navigator.push({view: <TeaNavigatorExample />})} />
+        <ListRow title='BasePage' detail='基础页面' onPress={() => this.navigator.push({view: <BasePageExample />})} />
+        <ListRow title='NavigationPage' detail='导航页面' onPress={() => this.navigator.push({view: <NavigationPageExample />})} bottomSeparator='full' />
         <View style={{height: Theme.screenInset.bottom}} />
       </ScrollView>
     );

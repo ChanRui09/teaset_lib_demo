@@ -99,6 +99,23 @@ export default class PopoverExample extends NavigationPage {
           </View>
         </View>
 
+        <View style={{height: 20}} />
+        <ListRow title='PaddingCorner 4' detail={
+          <Popover style={styles.popoverStyle} arrow='topLeft' paddingCorner={4}>
+            <Label style={{color: '#000'}} text='paddingCorner=4' />
+          </Popover>
+        } topSeparator='full' />
+        <ListRow title='PaddingCorner 16' detail={
+          <Popover style={styles.popoverStyle} arrow='topLeft' paddingCorner={16}>
+            <Label style={{color: '#000'}} text='paddingCorner=16' />
+          </Popover>
+        } />
+        <ListRow title='PaddingCorner 32' detail={
+          <Popover style={styles.popoverStyle} arrow='topLeft' paddingCorner={32}>
+            <Label style={{color: '#000'}} text='paddingCorner=32' />
+          </Popover>
+        } bottomSeparator='full' />
+
       </ScrollView>
     );
   }

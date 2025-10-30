@@ -19,6 +19,7 @@ export default class ProjectorExample extends NavigationPage {
     super(props);
     Object.assign(this.state, {
       index: 0,
+      slideStyle: null,
     });
   }
 
@@ -43,9 +44,10 @@ export default class ProjectorExample extends NavigationPage {
   }
 
   renderPage() {
+    let {slideStyle} = this.state;
     return (
       <ScrollView style={{flex: 1}}>
-        <Projector style={{height: 238}} index={this.state.index}>
+        <Projector style={{height: 238}} index={this.state.index} slideStyle={slideStyle}>
           {this.renderSlide('rgba(170, 240, 141, 0.1)')}
           {this.renderSlide('rgba(123, 207, 249, 0.1)')}
           {this.renderSlide('rgba(250, 231, 133, 0.1)')}
@@ -63,6 +65,13 @@ export default class ProjectorExample extends NavigationPage {
             </View>
           }
           topSeparator='full'
+          />
+        <ListRow
+          title='slideStyle (胶片样式)'
+          detail={slideStyle ? 'borderRadius: 20, margin: 10' : '默认'}
+          onPress={() => this.setState({
+            slideStyle: slideStyle ? null : {borderRadius: 20, margin: 10}
+          })}
           bottomSeparator='full'
           />
       </ScrollView>

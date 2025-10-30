@@ -52,6 +52,9 @@ export default class SegmentedBarExample extends NavigationPage {
       autoScroll: true,
       activeIndex: 0,
       custom: false,
+      indicatorWidth: null,
+      useTitleStyle: false,
+      useBadge: false,
     });
   }
 
@@ -96,7 +99,7 @@ export default class SegmentedBarExample extends NavigationPage {
   }
 
   renderPage() {
-    let {justifyItem, indicatorType, indicatorPosition, animated, autoScroll, custom, activeIndex} = this.state;
+    let {justifyItem, indicatorType, indicatorPosition, animated, autoScroll, custom, activeIndex, indicatorWidth, useTitleStyle, useBadge} = this.state;
     let barItems = custom ? this.barCustomItems : (justifyItem == 'scrollable' ? this.barScrollItems : this.barItems);
     return (
       <ScrollView style={{flex: 1}} stickyHeaderIndices={[1]}>
@@ -107,13 +110,22 @@ export default class SegmentedBarExample extends NavigationPage {
           indicatorPosition={indicatorPosition}
           indicatorLineColor={custom ? '#5cb85c' : undefined}
           indicatorLineWidth={custom ? 1 : undefined}
+          indicatorWidth={indicatorWidth}
           indicatorPositionPadding={custom ? 3 : undefined}
           animated={animated}
           autoScroll={autoScroll}
           activeIndex={activeIndex}
           onChange={index => this.onSegmentedBarChange(index)}
         >
-          {custom ? this.renderCustomItems() : barItems.map((item, index) => <SegmentedBar.Item key={'item' + index} title={item} />)}
+          {custom ? this.renderCustomItems() : barItems.map((item, index) => (
+            <SegmentedBar.Item 
+              key={'item' + index} 
+              title={item}
+              titleStyle={useTitleStyle ? {fontSize: 16, color: '#999'} : undefined}
+              activeTitleStyle={useTitleStyle ? {fontSize: 18, color: '#ff5722', fontWeight: 'bold'} : undefined}
+              badge={useBadge && index === 1 ? '3' : (useBadge && index === 2 ? 'new' : undefined)}
+            />
+          ))}
         </SegmentedBar>
         <Carousel
           style={{backgroundColor: Theme.defaultColor, height: 238, borderTopWidth: 1, borderTopColor: Theme.pageColor}}
@@ -150,6 +162,14 @@ export default class SegmentedBarExample extends NavigationPage {
           onSelected={(item, index) => this.setState({indicatorPosition: item})}
           />
         <ListRow
+          title='indicatorWidth (customWidth 时)'
+          detail={indicatorWidth ? indicatorWidth.toString() : '默认'}
+          onPress={() => this.setState({
+            indicatorWidth: indicatorWidth ? null : 40,
+            indicatorType: 'customWidth'
+          })}
+          />
+        <ListRow
           title='Animated'
           detail={<Switch value={animated} onValueChange={value => this.setState({animated: value})} />}
           />
@@ -160,9 +180,17 @@ export default class SegmentedBarExample extends NavigationPage {
           />
         <View style={{height: 20}} />
         <ListRow
+          title='titleStyle & activeTitleStyle'
+          detail={<Switch value={useTitleStyle} onValueChange={value => this.setState({useTitleStyle: value})} />}
+          topSeparator='full'
+          />
+        <ListRow
+          title='badge (Item 2, 3 显示徽章)'
+          detail={<Switch value={useBadge} onValueChange={value => this.setState({useBadge: value})} />}
+          />
+        <ListRow
           title='Custom'
           detail={<Switch value={custom} onValueChange={value => this.setState({custom: value})} />}
-          topSeparator='full'
           bottomSeparator='full'
           />
       </ScrollView>

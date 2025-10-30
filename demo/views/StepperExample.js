@@ -19,6 +19,7 @@ export default class StepperExample extends NavigationPage {
     super(props);
     Object.assign(this.state, {
       valueCustom: 1,
+      valueCallback: 0,
     });
   }
 
@@ -52,6 +53,18 @@ export default class StepperExample extends NavigationPage {
             }
             showSeparator={false}
             onChange={v => this.setState({valueCustom: v})}
+            />
+        } topSeparator='full' bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='OnChange callback' detail={
+          <Stepper
+            value={this.state.valueCallback}
+            min={-10}
+            max={10}
+            onChange={v => {
+              this.setState({valueCallback: v});
+              alert(`Value changed to: ${v}`);
+            }}
             />
         } topSeparator='full' bottomSeparator='full' />
       </ScrollView>

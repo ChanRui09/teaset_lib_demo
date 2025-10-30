@@ -19,6 +19,7 @@ export default class SearchInputExample extends NavigationPage {
     super(props);
     Object.assign(this.state, {
       valueCustom: null,
+      valueCallback: '',
     });
   }
 
@@ -46,6 +47,20 @@ export default class SearchInputExample extends NavigationPage {
             placeholder='Custom'
             placeholderTextColor='#aaa'
             onChangeText={text => this.setState({valueCustom: text})}
+            />
+        } topSeparator='full' bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='OnChangeText callback' detail={
+          <SearchInput
+            style={{width: 200}}
+            value={this.state.valueCallback}
+            placeholder='Type to search'
+            onChangeText={text => {
+              this.setState({valueCallback: text});
+              if (text.length >= 3) {
+                alert(`Searching for: ${text}`);
+              }
+            }}
             />
         } topSeparator='full' bottomSeparator='full' />
       </ScrollView>

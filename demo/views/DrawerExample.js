@@ -3,7 +3,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {View, ScrollView, Image} from 'react-native';
+import {View, ScrollView, Image, Text} from 'react-native';
 
 import {Theme, NavigationPage, ListRow, Drawer, Button, Label} from 'teaset';
 import SelectRow from './SelectRow';
@@ -92,11 +92,51 @@ export default class DrawerExample extends NavigationPage {
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
+        
+        <Label type='detail' size='xl' text='side 拉出边' />
+        <View style={{height: 10}} />
+        <View style={{
+          backgroundColor: '#f0f0f0',
+          padding: 15,
+          margin: 10,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: '#ccc'
+        }}>
+          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
+            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
+            • side: 抽屉拉出边，默认值 'left'{'\n'}
+            • 'left': 从左侧拉出{'\n'}
+            • 'right': 从右侧拉出{'\n'}
+            • 'top': 从顶部拉出{'\n'}
+            • 'bottom': 从底部拉出
+          </Text>
+        </View>
         <ListRow title='Left side' onPress={() => this.show('left')} topSeparator='full' />
         <ListRow title='Right side' onPress={() => this.show('right')} />
         <ListRow title='Top side' onPress={() => this.show('top')} />
         <ListRow title='Bottom side' onPress={() => this.show('bottom')} bottomSeparator='full'/>
+        
         <View style={{height: 20}} />
+        <Label type='detail' size='xl' text='rootTransform 根组件转换动画' />
+        <View style={{height: 10}} />
+        <View style={{
+          backgroundColor: '#f0f0f0',
+          padding: 15,
+          margin: 10,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: '#ccc'
+        }}>
+          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
+            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
+            • rootTransform: 根组件转换动画，默认值 'none'{'\n'}
+            • 'none': 无动画，抽屉覆盖在根组件上{'\n'}
+            • 'translate': 平移动画，根组件随抽屉平移{'\n'}
+            • 'scale': 缩放动画，根组件缩小并平移{'\n'}
+            • 选择后点击上面的按钮查看不同效果
+          </Text>
+        </View>
         <SelectRow
           title='Root transform'
           value={rootTransform}
@@ -105,6 +145,8 @@ export default class DrawerExample extends NavigationPage {
           topSeparator='full'
           bottomSeparator='full'
           />
+        
+        <View style={{height: 20}} />
       </ScrollView>
     );
   }

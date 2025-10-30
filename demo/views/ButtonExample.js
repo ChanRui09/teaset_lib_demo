@@ -37,6 +37,9 @@ export default class ButtonExample extends NavigationPage {
         <ListRow title='Type danger disabled' detail={<Button title='Button' type='danger' disabled={true} />} />
         <ListRow title='Type link disabled' detail={<Button title='Button' type='link' disabled={true} />} bottomSeparator='full' />
         <View style={{height: 20}} />
+        <ListRow title='titleStyle' detail={<Button title='Custom Text' titleStyle={{color: '#8a6d3b', fontSize: 18, fontWeight: 'bold'}} />} topSeparator='full' />
+        <ListRow title='onPress event' detail={<Button title='Click Me' type='primary' onPress={() => alert('Button Pressed!')} />} bottomSeparator='full' />
+        <View style={{height: 20}} />
         <ListRow title='Custom' detail={
           <Button style={{backgroundColor: '#rgba(238, 169, 91, 0.1)', borderColor: '#8a6d3b'}}>
             <Image style={{width: 16, height: 16, tintColor: '#8a6d3b'}} source={require('../icons/search.png')} />
