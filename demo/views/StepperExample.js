@@ -34,6 +34,8 @@ export default class StepperExample extends NavigationPage {
         <ListRow title='Readonly' detail={<Stepper editable={false} />} topSeparator='full' />
         <ListRow title='Disabled' detail={<Stepper disabled={true} />} bottomSeparator='full' />
         <View style={{height: 20}} />
+        <ListRow title='Hide separator' detail={<Stepper defaultValue={3} showSeparator={false} />} topSeparator='full' bottomSeparator='full' />
+        <View style={{height: 20}} />
         <ListRow title='Custom' detail={
           <Stepper
             style={{borderWidth: 0}}

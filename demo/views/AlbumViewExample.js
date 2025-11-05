@@ -133,11 +133,6 @@ export default class AlbumViewExample extends NavigationPage {
             }}
             />
           <StatusBar animated={false} hidden={true} />
-          {this.state.loadInfo ? (
-            <View style={{position: 'absolute', top: 40, left: 10, right: 10, backgroundColor: 'rgba(0,0,0,0.7)', padding: 10, borderRadius: 5}}>
-              <Label style={{color: '#fff'}} text={this.state.loadInfo} />
-            </View>
-          ) : null}
         </Overlay.PopView>
       );
       Overlay.show(overlayView);
@@ -193,6 +188,8 @@ export default class AlbumViewExample extends NavigationPage {
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 开启背景色后，拖动切换时可看到深色背景露出的间隔' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 设置大间隔(80px)后效果更明显' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 最后一张图片使用无效链接，可触发 onLoadImageFailure 回调' />
+            <Label style={{fontSize: 12, color: '#ff6b6b', lineHeight: 18, fontWeight: 'bold'}} text='• 打开图片时会自动预加载相邻图片，提升浏览流畅度' />
+            <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='  例如打开第1张图，会同时加载第2张' />
           </View>
           <View style={{height: 10}} />
           <View style={{padding: 10, backgroundColor: '#fff8e1', marginHorizontal: 10, borderRadius: 5, borderWidth: 1, borderColor: '#ffe082'}}>

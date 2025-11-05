@@ -22,6 +22,8 @@ export default class ToastExample extends NavigationPage {
       testDuration: 'short',
       defaultPosition: Toast.defaultPosition || 'center',
       defaultDuration: Toast.defaultDuration || 'short',
+      messageDefaultPosition: Toast.messageDefaultPosition || 'bottom',
+      messageDefaultDuration: Toast.messageDefaultDuration || 'short',
     });
   }
 
@@ -74,6 +76,26 @@ export default class ToastExample extends NavigationPage {
     });
   }
 
+  cycleMessageDefaultPosition() {
+    const order = ['center', 'top', 'bottom'];
+    const currentIndex = order.indexOf(this.state.messageDefaultPosition);
+    const nextValue = order[(currentIndex + 1) % order.length];
+    Toast.messageDefaultPosition = nextValue;
+    this.setState({messageDefaultPosition: nextValue}, () => {
+      Toast.info(`messageDefaultPosition → ${nextValue}`);
+    });
+  }
+
+  cycleMessageDefaultDuration() {
+    const order = ['short', 'long'];
+    const currentIndex = order.indexOf(this.state.messageDefaultDuration);
+    const nextValue = order[(currentIndex + 1) % order.length];
+    Toast.messageDefaultDuration = nextValue;
+    this.setState({messageDefaultDuration: nextValue}, () => {
+      Toast.info(`messageDefaultDuration → ${nextValue}`);
+    });
+  }
+
   showSuccessWithDefaults() {
     const {defaultPosition, defaultDuration} = this.state;
     Toast.success(`默认值 position=${defaultPosition} duration=${defaultDuration}`);
@@ -105,40 +127,43 @@ export default class ToastExample extends NavigationPage {
     Toast.info(`显示时长: ${testDuration}`, testDuration, 'center');
   }
 
-  showOverlayOpacityTest(opacity) {
-    Toast.show({
-      text: `背景透明度: ${opacity}`,
-      icon: 'info',
-      position: 'center',
-      duration: 3000,
-      overlayOpacity: opacity,
-      modal: opacity > 0,
-    });
+  showMessageWithDefaults() {
+    const {messageDefaultPosition, messageDefaultDuration} = this.state;
+    Toast.message(`默认值 position=${messageDefaultPosition} duration=${messageDefaultDuration}`);
   }
 
   renderPage() {
-    let {testPosition, testDuration, defaultPosition, defaultDuration} = this.state;
+    let {testPosition, testDuration, defaultPosition, defaultDuration, messageDefaultPosition, messageDefaultDuration} = this.state;
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
         <View style={{marginHorizontal: 12, padding: 12, backgroundColor: '#f1f8ff', borderRadius: 8, borderWidth: 1, borderColor: '#90caf9'}}>
           <Label style={{fontSize: 12, color: '#0d47a1', fontWeight: 'bold'}} text='属性对比说明' />
-          <Label style={{fontSize: 12, color: '#0d47a1', marginTop: 6}} text='• position：单次调用时指定显示位置 (top/center/bottom)' />
-          <Label style={{fontSize: 12, color: '#0d47a1', marginTop: 2}} text='• defaultPosition：success/fail 等静态方法的默认位置' />
-          <Label style={{fontSize: 12, color: '#0d47a1', marginTop: 2}} text='• defaultDuration：success/fail 等静态方法的默认停留时长' />
-          <Label style={{fontSize: 12, color: '#0d47a1', marginTop: 2}} text='• duration：单次调用时的停留时长 (short=2000ms / long=3500ms)' />
+          <Label style={{fontSize: 12, color: '#0d47a1', marginTop: 6}} text='• defaultPosition / defaultDuration：success/fail/info 等方法的默认值' />
+          <Label style={{fontSize: 12, color: '#0d47a1', marginTop: 2}} text='• messageDefaultPosition / messageDefaultDuration：message 方法的默认值' />
+          <Label style={{fontSize: 12, color: '#0d47a1', marginTop: 2}} text='• position / duration：单次调用时的参数，会覆盖默认值' />
         </View>
         <View style={{height: 16}} />
         <ListRow
-          title='切换 defaultPosition'
+          title='defaultPosition (success/fail/info)'
           detail={`${defaultPosition} (点击切换)`}
           onPress={() => this.cycleDefaultPosition()}
           topSeparator='full'
         />
         <ListRow
-          title='切换 defaultDuration'
+          title='defaultDuration (success/fail/info)'
           detail={`${defaultDuration} (点击切换)`}
           onPress={() => this.cycleDefaultDuration()}
+        />
+        <ListRow
+          title='messageDefaultPosition (message)'
+          detail={`${messageDefaultPosition} (点击切换)`}
+          onPress={() => this.cycleMessageDefaultPosition()}
+        />
+        <ListRow
+          title='messageDefaultDuration (message)'
+          detail={`${messageDefaultDuration} (点击切换)`}
+          onPress={() => this.cycleMessageDefaultDuration()}
           bottomSeparator='full'
         />
         <View style={{height: 20}} />
@@ -155,10 +180,12 @@ export default class ToastExample extends NavigationPage {
         <ListRow title='Success (duration=long)' onPress={() => this.showSuccessWithDuration('long')} bottomSeparator='full' />
         <View style={{height: 20}} />
         <ListRow
-          title='Message (position=top)'
-          onPress={() => this.showMessageWithPosition('top')}
+          title='Message (使用默认位置/时长)'
+          detail={`position=${messageDefaultPosition} · duration=${messageDefaultDuration}`}
+          onPress={() => this.showMessageWithDefaults()}
           topSeparator='full'
         />
+        <ListRow title='Message (position=top)' onPress={() => this.showMessageWithPosition('top')} />
         <ListRow title='Message (position=center)' onPress={() => this.showMessageWithPosition('center')} />
         <ListRow title='Message (position=bottom)' onPress={() => this.showMessageWithPosition('bottom')} />
         <ListRow title='Message (duration=short)' onPress={() => this.showMessageWithDuration('short')} />
@@ -275,17 +302,6 @@ export default class ToastExample extends NavigationPage {
           <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• duration: 控制 Toast 显示时长' />
           <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• short: 2000 毫秒 (2秒)' />
           <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• long: 3500 毫秒 (3.5秒)' />
-        </View>
-        <View style={{height: 20}} />
-        <ListRow title='overlayOpacity: 0' onPress={() => this.showOverlayOpacityTest(0)} topSeparator='full' />
-        <ListRow title='overlayOpacity: 0.2' onPress={() => this.showOverlayOpacityTest(0.2)} />
-        <ListRow title='overlayOpacity: 0.4' onPress={() => this.showOverlayOpacityTest(0.4)} />
-        <ListRow title='overlayOpacity: 0.6' onPress={() => this.showOverlayOpacityTest(0.6)} bottomSeparator='full' />
-        <View style={{height: 10}} />
-        <View style={{padding: 10, backgroundColor: '#f3e5f5', marginHorizontal: 10, borderRadius: 5}}>
-          <Label style={{fontSize: 12, color: '#6a1b9a', lineHeight: 18}} text='说明：' />
-          <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• overlayOpacity: 背景蒙层透明度 (0-1)' />
-          <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 值越大背景越暗，0 为完全透明' />
         </View>
         <View style={{height: 20}} />
         <ListRow title='Show custom' onPress={() => this.showCustom()} topSeparator='full' />

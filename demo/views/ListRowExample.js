@@ -24,18 +24,30 @@ export default class ListRowExample extends NavigationPage {
       <ScrollView style={{flex: 1}} contentContainerStyle={{ paddingBottom: 50 }}>
         <View style={{height: 20}} />
         <ListRow title='Title' detail='Detail' topSeparator='full' />
+        <ListRow title='Title style' detail='Styled with titleStyle' titleStyle={{fontSize: 18, color: '#31708f'}} />
         <ListRow title={<Label style={{fontSize: 18, color: '#31708f'}} text='Custom title' />} />
+        <ListRow title='Detail style' detail='Primary detail text' detailStyle={{color: '#1b5e20', fontSize: 16}} />
         <ListRow title='Custom detail' detail={
           <View style={{backgroundColor: '#5bc0de', width: 60, height: 24, borderRadius: 4}} />
         } />
         <ListRow title='Long detail' detail={
           'React Native enables you to build world-class application experiences on native platforms using a consistent developer experience based on JavaScript and React.'
         } />
+        <ListRow
+          title='Detail multiline'
+          detail={
+            'This row sets detailMultiLine to explicitly allow wrapping even with title on the left. React Native makes it painless to create cross-platform apps.'
+          }
+          detailMultiLine
+        />
         <ListRow title='Title place top' detail={
           'React Native enables you to build world-class application experiences on native platforms using a consistent developer experience based on JavaScript and React.'
         } titlePlace='top' />
+        <ListRow title='Title place none' titlePlace='none' detail='Only detail content will render when titlePlace is set to none.' />
         <ListRow title='Icon' icon={require('../icons/config.png')} />
         <ListRow title='Accessory indicator' accessory='indicator' />
+        <ListRow title='Accessory check' accessory='check' detail='Mark as selected' />
+        <ListRow title='Accessory empty' accessory='empty' detail='Reserve indicator spacing' />
         <ListRow title='Custom accessory' accessory={<Image source={require('../icons/location.png')} />} />
         <ListRow title='Press able' onPress={() => alert('Press!')} />
         <ListRow

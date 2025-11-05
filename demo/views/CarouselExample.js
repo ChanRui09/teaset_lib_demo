@@ -173,7 +173,7 @@ export default class CarouselExample extends NavigationPage {
     const imageHeight = horizontal ? 238 : 238;
     
     return (
-      <ScrollView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <View style={{height: 10}} />
         <View style={{paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#f0f0f0'}}>
           <Label style={{fontSize: 12, color: '#666'}} text={`Current: Page ${currentIndex + 1} / ${totalPages}`} />
@@ -182,176 +182,184 @@ export default class CarouselExample extends NavigationPage {
           <Label style={{fontSize: 11, color: '#856404', fontWeight: 'bold'}} text={`Scroll Events: ${scrollEventCounter} times | Last interval: ${scrollEventRate}ms`} />
           <Label style={{fontSize: 10, color: '#856404', marginTop: 2}} text='👆 Manually scroll the carousel above to see event frequency' />
         </View>
-        
-        <Carousel
-          ref={ref => this.carouselRef = ref}
-          style={{height: carouselHeight}}
-          carousel={carousel}
-          interval={interval}
-          direction={direction}
-          cycle={cycle}
-          control={this.renderControl()}
-          horizontal={horizontal}
-          pagingEnabled={pagingEnabled}
-          showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
-          showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-          alwaysBounceHorizontal={alwaysBounceHorizontal}
-          alwaysBounceVertical={alwaysBounceVertical}
-          bounces={bounces}
-          scrollEventThrottle={scrollEventThrottle}
-          onScroll={(event) => this.handleScroll(event)}
-          onChange={(index, total) => this.handleCarouselChange(index, total)}
-          onLayout={e => this.setState({width: e.nativeEvent.layout.width})}
+
+        <View style={{height: carouselHeight, backgroundColor: '#00000008'}}>
+          <Carousel
+            ref={ref => this.carouselRef = ref}
+            style={{flex: 1}}
+            carousel={carousel}
+            interval={interval}
+            direction={direction}
+            cycle={cycle}
+            control={this.renderControl()}
+            horizontal={horizontal}
+            pagingEnabled={pagingEnabled}
+            showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
+            showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+            alwaysBounceHorizontal={alwaysBounceHorizontal}
+            alwaysBounceVertical={alwaysBounceVertical}
+            bounces={bounces}
+            scrollEventThrottle={scrollEventThrottle}
+            onScroll={(event) => this.handleScroll(event)}
+            onChange={(index, total) => this.handleCarouselChange(index, total)}
+            onLayout={e => this.setState({width: e.nativeEvent.layout.width})}
+          >
+            <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset1.jpg')} />
+            <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset2.jpg')} />
+            <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset3.jpg')} />
+          </Carousel>
+        </View>
+
+        <ScrollView
+          style={{flex: 1}}
+          contentContainerStyle={{paddingBottom: 20}}
+          nestedScrollEnabled
         >
-          <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset1.jpg')} />
-          <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset2.jpg')} />
-          <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset3.jpg')} />
-        </Carousel>
-        
-        <View style={{height: 20}} />
-        
-        {/* 基础属性 */}
-        <ListRow 
-          title='Control' 
-          detail={control} 
-          onPress={() => this.selectControl()} 
-          topSeparator='full' 
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='dot & activeDot props for custom control' />
-        </View>
-        
-        <ListRow
-          title='Carousel (auto play)'
-          detail={<Switch value={carousel} onValueChange={value => {
-            this.setState({carousel: value});
-            console.log('[Carousel] carousel prop:', value);
-          }} />}
-        />
-        
-        <ListRow
-          title='Direction'
-          detail={direction}
-          onPress={() => this.selectDirection()}
-        />
-        
-        <ListRow
-          title='Cycle (loop)'
-          detail={<Switch value={cycle} onValueChange={value => {
-            this.setState({cycle: value});
-            console.log('[Carousel] cycle prop:', value);
-          }} />}
-        />
-        
-        {/* ScrollView 继承属性 */}
-        <View style={{height: 20}} />
-        <ListRow
-          title='horizontal'
-          detail={<Switch value={horizontal} onValueChange={value => {
-            this.setState({horizontal: value});
-            console.log('[Carousel] horizontal prop:', value);
-          }} />}
-          topSeparator='full'
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='Change scroll direction (inherited from ScrollView)' />
-        </View>
-        
-        <ListRow
-          title='pagingEnabled'
-          detail={<Switch value={pagingEnabled} onValueChange={value => {
-            this.setState({pagingEnabled: value});
-            console.log('[Carousel] pagingEnabled prop:', value);
-          }} />}
-        />
-        
-        <ListRow
-          title='showsHorizontalScrollIndicator'
-          detail={<Switch value={showsHorizontalScrollIndicator} onValueChange={value => {
-            this.setState({showsHorizontalScrollIndicator: value});
-            console.log('[Carousel] showsHorizontalScrollIndicator prop:', value);
-          }} />}
-        />
-        
-        <ListRow
-          title='showsVerticalScrollIndicator'
-          detail={<Switch value={showsVerticalScrollIndicator} onValueChange={value => {
-            this.setState({showsVerticalScrollIndicator: value});
-            console.log('[Carousel] showsVerticalScrollIndicator prop:', value);
-          }} />}
-        />
-        
-        <ListRow
-          title='alwaysBounceHorizontal'
-          detail={<Switch value={alwaysBounceHorizontal} onValueChange={value => {
-            this.setState({alwaysBounceHorizontal: value});
-            console.log('[Carousel] alwaysBounceHorizontal prop:', value);
-          }} />}
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='需开启bounces，在Cycle为false的情况下，可见最后一张图片回弹' />
-        </View>
-        <ListRow
-          title='alwaysBounceVertical'
-          detail={<Switch value={alwaysBounceVertical} onValueChange={value => {
-            this.setState({alwaysBounceVertical: value});
-            console.log('[Carousel] alwaysBounceVertical prop:', value);
-          }} />}
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='需开启bounces，在Cycle为false的情况下，可见最后一张图片回弹' />
-        </View>
-        <ListRow
-          title='bounces'
-          detail={<Switch value={bounces} onValueChange={value => {
-            this.setState({bounces: value});
-            console.log('[Carousel] bounces prop:', value);
-          }} />}
-        />
-        
-        <ListRow
-          title='scrollEventThrottle'
-          detail={`${scrollEventThrottle}ms`}
-          onPress={() => this.selectScrollEventThrottle()}
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='Controls scroll event frequency (1/16/50/100/200/500/1000ms)' />
-          <Label style={{color: '#ff5722', fontSize: 11, marginTop: 2}} text='⚠️ Test: Turn OFF "Carousel", turn ON "bounces", then manually scroll to see difference' />
-        </View>
-        
-        <ListRow
-          title='Reset Scroll Counter'
-          detail='Tap to reset'
-          onPress={() => this.resetScrollCounter()}
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='Reset counter before testing different throttle values' />
-        </View>
-        
-        {/* 方法调用 */}
-        <View style={{height: 20}} />
-        <ListRow
-          title='scrollToPage(index, animated)'
-          detail='Tap to select page'
-          onPress={() => this.scrollToSpecificPage()}
-          topSeparator='full'
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='Method: Scroll to specific page with animation' />
-        </View>
-        
-        <ListRow
-          title='scrollToNextPage(animated)'
-          detail='Tap to scroll next'
-          onPress={() => this.scrollToNext()}
-          bottomSeparator='full'
-        />
-        <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-          <Label style={{color: '#999', fontSize: 11}} text='Method: Scroll to next page with animation' />
-        </View>
-        
-        <View style={{height: 20}} />
-      </ScrollView>
+          <View style={{height: 20}} />
+
+          {/* 基础属性 */}
+          <ListRow 
+            title='Control' 
+            detail={control} 
+            onPress={() => this.selectControl()} 
+            topSeparator='full' 
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='dot & activeDot props for custom control' />
+          </View>
+
+          <ListRow
+            title='Carousel (auto play)'
+            detail={<Switch value={carousel} onValueChange={value => {
+              this.setState({carousel: value});
+              console.log('[Carousel] carousel prop:', value);
+            }} />}
+          />
+
+          <ListRow
+            title='Direction'
+            detail={direction}
+            onPress={() => this.selectDirection()}
+          />
+
+          <ListRow
+            title='Cycle (loop)'
+            detail={<Switch value={cycle} onValueChange={value => {
+              this.setState({cycle: value});
+              console.log('[Carousel] cycle prop:', value);
+            }} />}
+          />
+
+          {/* ScrollView 继承属性 */}
+          <View style={{height: 20}} />
+          <ListRow
+            title='horizontal'
+            detail={<Switch value={horizontal} onValueChange={value => {
+              this.setState({horizontal: value});
+              console.log('[Carousel] horizontal prop:', value);
+            }} />}
+            topSeparator='full'
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='Change scroll direction (inherited from ScrollView)' />
+          </View>
+
+          <ListRow
+            title='pagingEnabled'
+            detail={<Switch value={pagingEnabled} onValueChange={value => {
+              this.setState({pagingEnabled: value});
+              console.log('[Carousel] pagingEnabled prop:', value);
+            }} />}
+          />
+
+          <ListRow
+            title='showsHorizontalScrollIndicator'
+            detail={<Switch value={showsHorizontalScrollIndicator} onValueChange={value => {
+              this.setState({showsHorizontalScrollIndicator: value});
+              console.log('[Carousel] showsHorizontalScrollIndicator prop:', value);
+            }} />}
+          />
+
+          <ListRow
+            title='showsVerticalScrollIndicator'
+            detail={<Switch value={showsVerticalScrollIndicator} onValueChange={value => {
+              this.setState({showsVerticalScrollIndicator: value});
+              console.log('[Carousel] showsVerticalScrollIndicator prop:', value);
+            }} />}
+          />
+
+          <ListRow
+            title='alwaysBounceHorizontal'
+            detail={<Switch value={alwaysBounceHorizontal} onValueChange={value => {
+              this.setState({alwaysBounceHorizontal: value});
+              console.log('[Carousel] alwaysBounceHorizontal prop:', value);
+            }} />}
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='需开启bounces，在Cycle为false的情况下，可见最后一张图片回弹' />
+          </View>
+          <ListRow
+            title='alwaysBounceVertical'
+            detail={<Switch value={alwaysBounceVertical} onValueChange={value => {
+              this.setState({alwaysBounceVertical: value});
+              console.log('[Carousel] alwaysBounceVertical prop:', value);
+            }} />}
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='需开启bounces，在Cycle为false的情况下，可见最后一张图片回弹' />
+          </View>
+          <ListRow
+            title='bounces'
+            detail={<Switch value={bounces} onValueChange={value => {
+              this.setState({bounces: value});
+              console.log('[Carousel] bounces prop:', value);
+            }} />}
+          />
+
+          <ListRow
+            title='scrollEventThrottle'
+            detail={`${scrollEventThrottle}ms`}
+            onPress={() => this.selectScrollEventThrottle()}
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='Controls scroll event frequency (1/16/50/100/200/500/1000ms)' />
+            <Label style={{color: '#ff5722', fontSize: 11, marginTop: 2}} text='⚠️ Test: Turn OFF "Carousel", turn ON "bounces", then manually scroll to see difference' />
+          </View>
+
+          <ListRow
+            title='Reset Scroll Counter'
+            detail='Tap to reset'
+            onPress={() => this.resetScrollCounter()}
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='Reset counter before testing different throttle values' />
+          </View>
+
+          {/* 方法调用 */}
+          <View style={{height: 20}} />
+          <ListRow
+            title='scrollToPage(index, animated)'
+            detail='Tap to select page'
+            onPress={() => this.scrollToSpecificPage()}
+            topSeparator='full'
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='Method: Scroll to specific page with animation' />
+          </View>
+
+          <ListRow
+            title='scrollToNextPage(animated)'
+            detail='Tap to scroll next'
+            onPress={() => this.scrollToNext()}
+            bottomSeparator='full'
+          />
+          <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
+            <Label style={{color: '#999', fontSize: 11}} text='Method: Scroll to next page with animation' />
+          </View>
+
+          <View style={{height: 20}} />
+        </ScrollView>
+      </View>
     );
   }
 

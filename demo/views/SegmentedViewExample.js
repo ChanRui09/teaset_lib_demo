@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, ScrollView, Switch} from 'react-native';
 
-import {Theme, NavigationPage, ListRow, SegmentedView, Label, PullPicker} from 'teaset';
+import {Theme, NavigationPage, ListRow, SegmentedView, Label, PullPicker, Toast} from 'teaset';
 
 import SelectRow from './SelectRow';
 
@@ -24,6 +24,17 @@ export default class SegmentedViewExample extends NavigationPage {
     this.justifyItemItems = ['fixed', 'scrollable'];
     this.indicatorTypeItems = ['none', 'boxWidth', 'itemWidth'];
     this.indicatorPositionItems = ['top', 'bottom'];
+    this.manyItems = [
+      'Aged Pu\'er',
+      'Bohea',
+      'Chrysanthemum',
+      'Hyson',
+      'Jasmine',
+      'Keemun',
+      'Loungjing',
+      'Pekoe',
+      'Tieguanyin',
+    ];
     Object.assign(this.state, {
       type: 'projector',
       custom: false,
@@ -37,12 +48,14 @@ export default class SegmentedViewExample extends NavigationPage {
       autoScroll: true,
       useTitleStyle: false,
       useBadge: false,
+      indicatorPositionPadding: null,
+      useManyItems: false,
     });
   }
 
   renderTitle(index) {
-    let titles = ['One', 'Two', 'Three'];
-    let {custom, activeIndex} = this.state;
+    let {custom, activeIndex, useManyItems} = this.state;
+    let titles = useManyItems ? this.manyItems : ['One', 'Two', 'Three'];
     if (!custom) return titles[index];
 
     let icons = [
@@ -70,7 +83,9 @@ export default class SegmentedViewExample extends NavigationPage {
   }
 
   renderPage() {
-    let {custom, type, barPosition, barStyle, justifyItem, indicatorType, indicatorPosition, animated, autoScroll, useTitleStyle, useBadge} = this.state;
+    let {custom, type, barPosition, barStyle, justifyItem, indicatorType, indicatorPosition, animated, autoScroll, useTitleStyle, useBadge, indicatorPositionPadding, useManyItems} = this.state;
+    let titles = useManyItems ? this.manyItems : ['One', 'Two', 'Three'];
+    
     return (
       <ScrollView style={{flex: 1}} contentContainerStyle={{flexGrow: 1}}>
         <SegmentedView
@@ -83,41 +98,29 @@ export default class SegmentedViewExample extends NavigationPage {
           indicatorPosition={indicatorPosition}
           indicatorLineColor={custom ? '#5cb85c' : undefined}
           indicatorLineWidth={custom ? 1 : undefined}
-          indicatorPositionPadding={custom ? 3 : undefined}
+          indicatorPositionPadding={indicatorPositionPadding !== null ? indicatorPositionPadding : (custom ? 3 : undefined)}
           animated={animated}
           autoScroll={autoScroll}
           activeIndex={this.state.activeIndex}
-          onChange={index => this.setState({activeIndex: index})}
+          onChange={index => {
+            console.log(`SegmentedView changed to index: ${index}`);
+            Toast.message(`Segment ${index + 1}`, {position: 'top', duration: 1000});
+            this.setState({activeIndex: index});
+          }}
         >
-          <SegmentedView.Sheet 
-            title={this.renderTitle(0)}
-            titleStyle={useTitleStyle ? {fontSize: 14, color: '#999'} : undefined}
-            activeTitleStyle={useTitleStyle ? {fontSize: 16, color: '#ff5722', fontWeight: 'bold'} : undefined}
-            badge={useBadge ? '5' : undefined}
-          >
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Label type='detail' size='xl' text='Segment one' />
-            </View>
-          </SegmentedView.Sheet>
-          <SegmentedView.Sheet 
-            title={this.renderTitle(1)}
-            titleStyle={useTitleStyle ? {fontSize: 14, color: '#999'} : undefined}
-            activeTitleStyle={useTitleStyle ? {fontSize: 16, color: '#ff5722', fontWeight: 'bold'} : undefined}
-            badge={useBadge ? 'new' : undefined}
-          >
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Label type='detail' size='xl' text='Segment two' />
-            </View>
-          </SegmentedView.Sheet>
-          <SegmentedView.Sheet 
-            title={this.renderTitle(2)}
-            titleStyle={useTitleStyle ? {fontSize: 14, color: '#999'} : undefined}
-            activeTitleStyle={useTitleStyle ? {fontSize: 16, color: '#ff5722', fontWeight: 'bold'} : undefined}
-          >
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Label type='detail' size='xl' text='Segment three' />
-            </View>
-          </SegmentedView.Sheet>
+          {titles.map((item, index) => (
+            <SegmentedView.Sheet 
+              key={index}
+              title={this.renderTitle(index)}
+              titleStyle={useTitleStyle ? {fontSize: 14, color: '#999'} : undefined}
+              activeTitleStyle={useTitleStyle ? {fontSize: 16, color: '#ff5722', fontWeight: 'bold'} : undefined}
+              badge={useBadge && index === 0 ? '5' : (useBadge && index === 1 ? 'new' : undefined)}
+            >
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Label type='detail' size='xl' text={`Segment ${item}`} />
+              </View>
+            </SegmentedView.Sheet>
+          ))}
         </SegmentedView>
         <View style={{height: 20}} />
         <SelectRow
@@ -157,12 +160,39 @@ export default class SegmentedViewExample extends NavigationPage {
           onSelected={(item, index) => this.setState({indicatorPosition: item})}
           />
         <ListRow
+          title='indicatorPositionPadding'
+          detail={indicatorPositionPadding !== null ? indicatorPositionPadding.toString() : 'Theme default'}
+          onPress={() => {
+            const paddings = [null, 0, 5, 10, 20];
+            const currentIndex = paddings.indexOf(indicatorPositionPadding);
+            const nextIndex = (currentIndex + 1) % paddings.length;
+            this.setState({indicatorPositionPadding: paddings[nextIndex]});
+          }}
+          />
+        <ListRow
           title='animated (动画效果)'
           detail={<Switch value={animated} onValueChange={value => this.setState({animated: value})} />}
           />
         <ListRow
           title='autoScroll (自动滚动)'
           detail={<Switch value={autoScroll} onValueChange={value => this.setState({autoScroll: value})} />}
+          />
+        <ListRow
+          title='Use many items (测试 autoScroll)'
+          detail={<Switch value={useManyItems} onValueChange={value => this.setState({useManyItems: value, justifyItem: value ? 'scrollable' : 'fixed', activeIndex: 0})} />}
+          />
+        <ListRow
+          title='activeIndex (跳转到指定页)'
+          detail={`当前: ${this.state.activeIndex}`}
+          onPress={() => {
+            const itemCount = useManyItems ? this.manyItems.length : 3;
+            PullPicker.show(
+              'Select Page',
+              Array.from({length: itemCount}, (_, i) => `Page ${i}`),
+              this.state.activeIndex,
+              (item, index) => this.setState({activeIndex: index})
+            );
+          }}
           bottomSeparator='full'
           />
         <View style={{height: 20}} />

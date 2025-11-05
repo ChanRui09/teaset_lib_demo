@@ -4,10 +4,23 @@
 
 import React, { Component } from 'react';
 import { View, ScrollView, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { Theme, NavigationPage, ListRow, PullPicker, Label } from 'teaset';
 
-export default class ThemeExample extends NavigationPage {
+// 使用 HOC 将 navigation 注入到组件中
+function withNavigation(WrappedComponent) {
+  // Forward the ref so NavigationPage can still obtain it
+  const WithNavigationComponent = (props, ref) => {
+    const navigation = useNavigation();
+    return <WrappedComponent {...props} reactNavigation={navigation} ref={ref} />;
+  };
+  const Forwarded = React.forwardRef(WithNavigationComponent);
+  Forwarded.displayName = `withNavigation(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+  return Forwarded;
+}
+
+class ThemeExample extends NavigationPage {
 
   static defaultProps = {
     ...NavigationPage.defaultProps,
@@ -22,6 +35,7 @@ export default class ThemeExample extends NavigationPage {
       statusBarHeight: Theme.statusBarHeight,
       screenInset: Theme.screenInset,
       primaryColor: Theme.primaryColor,
+      currentOrientation: 'portrait', // 'portrait', 'landscape', 'all'
     };
   }
 
@@ -59,41 +73,58 @@ export default class ThemeExample extends NavigationPage {
     );
   }
 
-  customPrimaryColor() {
-    const color = '#f55e5d';
-    Theme.set({
-      primaryColor: color,
-      navColor: color,
-      navSeparatorColor: color,
-      btnPrimaryColor: color,
-      btnBorderColor: color,
-      btnPrimaryBorderColor: color,
-      btnTitleColor: color,
-      tvBarBtnIconActiveTintColor: color,
-      tvBarBtnActiveTitleColor: color,
-      sbBtnActiveTitleColor: color,
-      sbIndicatorLineColor: color,
-    });
-    this.refreshThemeInfo();
-    this.navigator.popToTop();
-  }
-
-  customBackButtonTitle() {
-    Theme.set({
-      backButtonTitle: '返回',
-    });
-    this.refreshThemeInfo();
-    this.navigator.popToTop();
+  changeOrientation() {
+    const orientations = ['all', 'portrait', 'portrait_up', 'portrait_down', 'landscape', 'landscape_left', 'landscape_right'];
+    const orientationLabels = [
+      'All - 所有方向',
+      'Portrait - 竖屏',
+      'Portrait Up - 竖屏向上',
+      'Portrait Down - 竖屏向下',
+      'Landscape - 横屏',
+      'Landscape Left - 横屏向左',
+      'Landscape Right - 横屏向右'
+    ];
+    
+    const currentIndex = orientations.indexOf(this.state.currentOrientation);
+    
+    PullPicker.show(
+      'Select orientation',
+      orientationLabels,
+      currentIndex,
+      (item, index) => {
+        const selectedOrientation = orientations[index];
+        this.setState({ currentOrientation: selectedOrientation });
+        
+        // 使用 react-navigation 设置屏幕方向
+        try {
+          const navigation = this.props.reactNavigation;
+          if (navigation && typeof navigation.setOptions === 'function') {
+            navigation.setOptions({
+              orientation: selectedOrientation,
+            });
+            console.log('Screen orientation set to:', selectedOrientation);
+          } else {
+            console.log('Navigation object not available');
+          }
+        } catch (error) {
+          console.log('Failed to set orientation:', error);
+        }
+      }
+    );
   }
 
   renderPage() {
-    let { isLandscape, statusBarHeight, screenInset, primaryColor } = this.state;
+    let { isLandscape, statusBarHeight, screenInset, primaryColor, currentOrientation } = this.state;
     return (
       <ScrollView style={{ flex: 1 }}>
         <View style={{ height: 20 }} />
-        <ListRow title='Select theme' detail={Object.keys(Theme.themes).join(', ')} onPress={() => this.changeTheme()} topSeparator='full' />
-        <ListRow title='Custom primaryColor' detail='Set to #f55e5d' onPress={() => this.customPrimaryColor()} />
-        <ListRow title='Custom backButtonTitle' detail='Set to 返回' onPress={() => this.customBackButtonTitle()} bottomSeparator='full' />
+        <ListRow title='Select theme' detail={Object.keys(Theme.themes).join(', ')} onPress={() => this.changeTheme()} topSeparator='full' bottomSeparator='indent' />
+        <ListRow 
+          title='Screen orientation' 
+          detail={currentOrientation} 
+          onPress={() => this.changeOrientation()} 
+          bottomSeparator='full' 
+        />
         <View style={{ height: 20 }} />
         <ListRow title='isLandscape' detail={String(isLandscape)} topSeparator='full' bottomSeparator='indent' />
         <ListRow title='statusBarHeight' detail={`${statusBarHeight}`} bottomSeparator='indent' />
@@ -106,18 +137,10 @@ export default class ThemeExample extends NavigationPage {
           detailMultiLine
           bottomSeparator='full'
         />
-        <View style={{ height: 20 }} />
-        <View style={{ paddingHorizontal: 12 }}>
-          <Label style={{ fontSize: 12, color: '#666', lineHeight: 18 }} text='Primary Color Preview' />
-        </View>
-        <View style={{ paddingHorizontal: 12, marginTop: 8, marginBottom: 12 }}>
-          <View style={{ height: 50, borderRadius: 8, backgroundColor: primaryColor, alignItems: 'center', justifyContent: 'center' }}>
-            <Label style={{ color: '#fff', fontWeight: 'bold' }} text={primaryColor} />
-          </View>
-        </View>
-        <View style={{ height: 20 }} />
       </ScrollView>
     );
   }
 
 }
+
+export default withNavigation(ThemeExample);

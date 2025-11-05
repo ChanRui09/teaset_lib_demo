@@ -30,6 +30,7 @@ export default class WheelExample extends NavigationPage {
       useMaskStyle: false,
       useHoleLine: false,
       useDefaultIndex: false,
+      useItemStyle: false,
     });
   }
 
@@ -66,7 +67,7 @@ export default class WheelExample extends NavigationPage {
   }
 
   renderPage() {
-    let {date, useHoleStyle, useMaskStyle, useHoleLine, useDefaultIndex} = this.state;
+    let {date, useHoleStyle, useMaskStyle, useHoleLine, useDefaultIndex, useItemStyle} = this.state;
     let year = date.getFullYear(), month = date.getMonth(), day = date.getDate();
     let daysCount = this.daysCount[this.isLeapYear(year) ? 1 : 0][month];
     let days = [];
@@ -89,6 +90,13 @@ export default class WheelExample extends NavigationPage {
       <View style={{height: 1, backgroundColor: '#e91e63'}} />
     ) : undefined;
 
+    let itemStyle = useItemStyle ? {
+      textAlign: 'center',
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#2196f3',
+    } : {textAlign: 'center'};
+
     return (
       <View style={{flex: 1}}>
         <ScrollView style={{flex: 1}}>
@@ -101,7 +109,7 @@ export default class WheelExample extends NavigationPage {
           <View style={{backgroundColor: Theme.defaultColor, padding: 20, flexDirection: 'row', justifyContent: 'center'}}>
             <Wheel
               style={{height: 200, width: 80}}
-              itemStyle={{textAlign: 'center'}}
+              itemStyle={itemStyle}
               holeStyle={holeStyle}
               maskStyle={maskStyle}
               holeLine={holeLine}
@@ -112,7 +120,7 @@ export default class WheelExample extends NavigationPage {
               />
             <Wheel
               style={{height: 200, width: 80}}
-              itemStyle={{textAlign: 'center'}}
+              itemStyle={itemStyle}
               holeStyle={holeStyle}
               maskStyle={maskStyle}
               holeLine={holeLine}
@@ -123,13 +131,13 @@ export default class WheelExample extends NavigationPage {
               />
             <Wheel
               style={{height: 200, width: 80}}
-              itemStyle={{textAlign: 'center'}}
+              itemStyle={itemStyle}
               holeStyle={holeStyle}
               maskStyle={maskStyle}
               holeLine={holeLine}
               items={days}
               index={useDefaultIndex ? undefined : days.indexOf(day)}
-              defaultIndex={useDefaultIndex ? days.indexOf(day) : undefined}
+              defaultIndex={useDefaultIndex ? this.months.indexOf(month + 1) : undefined}
               onChange={index => this.onDateChange(year, month, days[index])}
               />
           </View>
@@ -157,9 +165,13 @@ export default class WheelExample extends NavigationPage {
           </View>
           <View style={{height: 10}} />
           <ListRow
+            title='itemStyle (选项文字样式)'
+            detail={<Switch value={useItemStyle} onValueChange={value => this.setState({useItemStyle: value})} />}
+            topSeparator='full'
+          />
+          <ListRow
             title='holeStyle (当前项窗口样式)'
             detail={<Switch value={useHoleStyle} onValueChange={value => this.setState({useHoleStyle: value})} />}
-            topSeparator='full'
           />
           <ListRow
             title='maskStyle (蒙版样式)'
@@ -173,6 +185,7 @@ export default class WheelExample extends NavigationPage {
           <View style={{height: 10}} />
           <View style={{padding: 10, backgroundColor: '#f5f5f5', marginHorizontal: 10, borderRadius: 5}}>
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='说明：' />
+            <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• itemStyle: 选项文字样式（fontSize, fontWeight, color等），当 items 是组件时无效' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• holeStyle: 当前项窗口的样式，需指定 height 属性' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• maskStyle: 当前项上下蒙版的样式' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• holeLine: 当前项窗口的分隔线' />

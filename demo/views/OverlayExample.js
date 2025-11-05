@@ -19,7 +19,6 @@ export default class OverlayExample extends NavigationPage {
     super(props);
     // Checkbox refs (not used but defined for completeness)
     this.blackRef = React.createRef();
-    this.shadowRef = React.createRef();
     this.showArrowRef = React.createRef();
     // Button refs for popover positioning
     this.downstartRef = React.createRef();
@@ -39,13 +38,13 @@ export default class OverlayExample extends NavigationPage {
     this.rightEdgeRef = React.createRef();
     Object.assign(this.state, {
       black: true,
-      shadow: false,
       showArrow: true,
       useAutoKeyboard: false,
       useContainerStyle: false,
       useAutoDirection: true,
       useAlignInsets: false,
       usePaddingCorner: false,
+      customOverlayOpacity: 1,
       lastEvent: '',
       lastDetail: '',
     });
@@ -138,12 +137,13 @@ export default class OverlayExample extends NavigationPage {
 
   showPopCustom(imageSource, fromView, animated = true) {
     if (!fromView) return;
+    let {customOverlayOpacity} = this.state;
     fromView.measure((x, y, width, height, pageX, pageY) => {
       const bounds = {x: pageX, y: pageY, width, height};
       const overlayView = (
         <Overlay.PopView
           style={{alignItems: 'center', justifyContent: 'center'}}
-          overlayOpacity={1}
+          overlayOpacity={customOverlayOpacity}
           type='custom'
           customBounds={bounds}
           animated={animated}
@@ -161,7 +161,7 @@ export default class OverlayExample extends NavigationPage {
           </TouchableWithoutFeedback>
         </Overlay.PopView>
       );
-      this.logOverlayEvent('PopView customBounds', `from (${Math.round(pageX)}, ${Math.round(pageY)}) size ${Math.round(width)}x${Math.round(height)}，animated=${animated}`);
+      this.logOverlayEvent('PopView customBounds', `from (${Math.round(pageX)}, ${Math.round(pageY)}) size ${Math.round(width)}x${Math.round(height)}，animated=${animated}, overlayOpacity=${customOverlayOpacity}`);
       Overlay.show(overlayView);
     });
   }
@@ -218,7 +218,7 @@ export default class OverlayExample extends NavigationPage {
   }
 
   showPopover(view, direction, align) {
-    let {black, shadow, showArrow, useAutoDirection, useAlignInsets, usePaddingCorner} = this.state;
+    let {black, showArrow, useAutoDirection, useAlignInsets, usePaddingCorner} = this.state;
     let blackStyle = {
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       paddingTop: 8,
@@ -230,13 +230,7 @@ export default class OverlayExample extends NavigationPage {
       ...blackStyle,
       backgroundColor: '#fff',
     };
-    let shadowStyle = {
-      shadowColor: '#777',
-      shadowOffset: {width: 1, height: 1},
-      shadowOpacity: 0.5,
-      shadowRadius: 2,
-    };
-    let popoverStyle = [].concat(black ? blackStyle : whiteStyle).concat(shadow ? shadowStyle : null);
+    let popoverStyle = black ? blackStyle : whiteStyle;
 
     view.measure((x, y, width, height, pageX, pageY) => {
       let fromBounds = {x: pageX, y: pageY, width, height};
@@ -394,6 +388,35 @@ export default class OverlayExample extends NavigationPage {
         <ListRow title='Pop zoom in' onPress={() => this.showPop('zoomIn', false, 'Pop zoom in')} />
         <ListRow title='Pop modal' onPress={() => this.showPop('zoomOut', true, 'Pop modal')} />
         <ListRow
+          title='customBounds overlayOpacity'
+          detail={
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Label style={{fontSize: 12, color: '#666', marginRight: 8}} text={this.state.customOverlayOpacity.toFixed(1)} />
+              <Button 
+                title='0' 
+                size='sm'
+                type={this.state.customOverlayOpacity === 0 ? 'primary' : 'default'}
+                onPress={() => this.setState({customOverlayOpacity: 0})} 
+              />
+              <View style={{width: 4}} />
+              <Button 
+                title='0.5' 
+                size='sm'
+                type={this.state.customOverlayOpacity === 0.5 ? 'primary' : 'default'}
+                onPress={() => this.setState({customOverlayOpacity: 0.5})} 
+              />
+              <View style={{width: 4}} />
+              <Button 
+                title='1' 
+                size='sm'
+                type={this.state.customOverlayOpacity === 1 ? 'primary' : 'default'}
+                onPress={() => this.setState({customOverlayOpacity: 1})} 
+              />
+            </View>
+          }
+          accessory='none'
+        />
+        <ListRow
           title='Pop customBounds (animated)'
           detail={<Image style={{width: 40, height: 40}} source={img} resizeMode='cover' ref={v => this.imgView = v} />}
           onPress={() => this.showPopCustom(img, this.imgView, true)}
@@ -407,8 +430,9 @@ export default class OverlayExample extends NavigationPage {
         <View style={{height: 10}} />
         <View style={{padding: 10, backgroundColor: '#fff3e0', marginHorizontal: 10, borderRadius: 5}}>
           <Label style={{fontSize: 12, color: '#e65100', lineHeight: 18}} text='说明：' />
-          <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• containerStyle: 为 PopView 弹出框添加容器样式' />
-          <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 可添加边框、圆角等效果' />
+          <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• containerStyle: 为 PopView 弹出框添加容器样式（边框、圆角等）' />
+          <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• customBounds: 指定弹出的起始位置和尺寸，实现从某个元素展开的效果' />
+          <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• overlayOpacity: 背景半透明蒙版的透明度 (0=透明, 1=不透明)' />
         </View>
         <View style={{height: 20}} />
         <ListRow
@@ -418,7 +442,7 @@ export default class OverlayExample extends NavigationPage {
             <View>
               <View style={{paddingTop: 16, paddingBottom: 8}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: useAutoDirection ? '#e8f5e9' : '#ffebee', padding: 8, borderRadius: 5}}>
-                  <Label style={{fontSize: 14, fontWeight: 'bold', color: useAutoDirection ? '#2e7d32' : '#c62828'}} text={useAutoDirection ? '✓ autoDirection: 开启' : '✗ autoDirection: 关闭'} />
+                  <Label style={{fontSize: 14, fontWeight: 'bold', color: useAutoDirection ? '#2e7d32' : '#c62828'}} text={useAutoDirection ? 'autoDirection: 开启' : 'autoDirection: 关闭'} />
                   <View style={{width: 10}} />
                   <Switch value={this.state.useAutoDirection} onValueChange={value => this.setState({useAutoDirection: value})} />
                 </View>
@@ -453,9 +477,8 @@ export default class OverlayExample extends NavigationPage {
           titlePlace='top'
           detail={
             <View>
-              <View style={{paddingTop: 16, paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{paddingTop: 16, paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-around'}}>
                 <Checkbox title='Black' ref={this.blackRef} checked={this.state.black} onChange={value => this.setState({black: value})} />
-                <Checkbox title='Shadow' ref={this.shadowRef} checked={this.state.shadow} onChange={value => this.setState({shadow: value})} />
                 <Checkbox title='Show arrow' ref={this.showArrowRef} checked={this.state.showArrow} onChange={value => this.setState({showArrow: value})} />
               </View>
               <View style={{paddingTop: 8, paddingBottom: 8, flexDirection: 'row', justifyContent: 'space-between'}}>

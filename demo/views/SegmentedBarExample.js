@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, ScrollView, Switch} from 'react-native';
 
-import {Theme, NavigationPage, ListRow, Label, SegmentedBar, PullPicker, Carousel} from 'teaset';
+import {Theme, NavigationPage, ListRow, Label, SegmentedBar, PullPicker, Carousel, Toast} from 'teaset';
 import SelectRow from './SelectRow';
 
 export default class SegmentedBarExample extends NavigationPage {
@@ -55,12 +55,16 @@ export default class SegmentedBarExample extends NavigationPage {
       indicatorWidth: null,
       useTitleStyle: false,
       useBadge: false,
+      indicatorLineColor: null,
+      indicatorPositionPadding: null,
     });
   }
 
   onSegmentedBarChange(index) {
     if (index != this.state.activeIndex) {
       this.setState({activeIndex: index});
+      console.log(`[SegmentedBar] onChange callback - Current item: ${index + 1}`);
+      Toast.message(`Item ${index + 1}`, {position: 'top', duration: 1000});
       if (this.carouselRef.current) {
         this.carouselRef.current.scrollToPage(index, false);
       }
@@ -68,7 +72,11 @@ export default class SegmentedBarExample extends NavigationPage {
   }
 
   onCarouselChange(index) {
-    index != this.state.activeIndex && this.setState({activeIndex: index});
+    if (index != this.state.activeIndex) {
+      this.setState({activeIndex: index});
+      console.log(`[SegmentedBar] Carousel triggered change - Item: ${index + 1}`);
+      Toast.message(`Item ${index + 1}`, {position: 'top', duration: 1000});
+    }
   }
 
   renderCustomItems() {
@@ -99,7 +107,7 @@ export default class SegmentedBarExample extends NavigationPage {
   }
 
   renderPage() {
-    let {justifyItem, indicatorType, indicatorPosition, animated, autoScroll, custom, activeIndex, indicatorWidth, useTitleStyle, useBadge} = this.state;
+    let {justifyItem, indicatorType, indicatorPosition, animated, autoScroll, custom, activeIndex, indicatorWidth, useTitleStyle, useBadge, indicatorLineColor, indicatorPositionPadding} = this.state;
     let barItems = custom ? this.barCustomItems : (justifyItem == 'scrollable' ? this.barScrollItems : this.barItems);
     return (
       <ScrollView style={{flex: 1}} stickyHeaderIndices={[1]}>
@@ -108,10 +116,10 @@ export default class SegmentedBarExample extends NavigationPage {
           justifyItem={justifyItem}
           indicatorType={indicatorType}
           indicatorPosition={indicatorPosition}
-          indicatorLineColor={custom ? '#5cb85c' : undefined}
+          indicatorLineColor={indicatorLineColor || (custom ? '#5cb85c' : undefined)}
           indicatorLineWidth={custom ? 1 : undefined}
           indicatorWidth={indicatorWidth}
-          indicatorPositionPadding={custom ? 3 : undefined}
+          indicatorPositionPadding={indicatorPositionPadding !== null ? indicatorPositionPadding : (custom ? 3 : undefined)}
           animated={animated}
           autoScroll={autoScroll}
           activeIndex={activeIndex}
@@ -168,6 +176,26 @@ export default class SegmentedBarExample extends NavigationPage {
             indicatorWidth: indicatorWidth ? null : 40,
             indicatorType: 'customWidth'
           })}
+          />
+        <ListRow
+          title='indicatorLineColor'
+          detail={indicatorLineColor || 'Theme default'}
+          onPress={() => {
+            const colors = [null, '#ff5722', '#4caf50', '#2196f3', '#9c27b0'];
+            const currentIndex = colors.indexOf(indicatorLineColor);
+            const nextIndex = (currentIndex + 1) % colors.length;
+            this.setState({indicatorLineColor: colors[nextIndex]});
+          }}
+          />
+        <ListRow
+          title='indicatorPositionPadding'
+          detail={indicatorPositionPadding !== null ? indicatorPositionPadding.toString() : 'Theme default'}
+          onPress={() => {
+            const paddings = [null, 0, 5, 10, 20];
+            const currentIndex = paddings.indexOf(indicatorPositionPadding);
+            const nextIndex = (currentIndex + 1) % paddings.length;
+            this.setState({indicatorPositionPadding: paddings[nextIndex]});
+          }}
           />
         <ListRow
           title='Animated'

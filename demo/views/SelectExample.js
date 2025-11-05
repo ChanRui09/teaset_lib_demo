@@ -40,6 +40,11 @@ export default class SelectExample extends NavigationPage {
         value: 3,
       },
     ];
+    this.objectItems = [
+      {id: '0', name: 'Aged Pu\'er', origin: 'Yunnan'},
+      {id: '1', name: 'Jasmine', origin: 'Fujian'},
+      {id: '2', name: 'Tieguanyin', origin: 'Beijing'},
+    ];
     Object.assign(this.state, {
       valueSM: null,
       valueMD: null,
@@ -53,11 +58,13 @@ export default class SelectExample extends NavigationPage {
       valueIconTintColor: null,
       valuePlaceholderColor: null,
       valueCallback: null,
+      valueObject: null,
+      valueObjectLabel: null,
     });
   }
 
   renderPage() {
-    let {valueSM, valueMD, valueLG, valueAuto, valuePull, valuePopover, valueReadonly, valueDisable, valueCustom, valueIconTintColor, valuePlaceholderColor, valueCallback} = this.state;
+    let {valueSM, valueMD, valueLG, valueAuto, valuePull, valuePopover, valueReadonly, valueDisable, valueCustom, valueIconTintColor, valuePlaceholderColor, valueCallback, valueObject, valueObjectLabel} = this.state;
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
@@ -183,6 +190,34 @@ export default class SelectExample extends NavigationPage {
               onSelected={(item, index) => this.setState({valueCustom: item.value})}
               />
           } topSeparator='full' bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow
+          title='Data'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueObject}
+              items={this.objectItems}
+              placeholder='Select tea'
+              pickerTitle='Data demo'
+              getItemValue={(item, index) => item.id}
+              getItemText={(item, index) => `${item.name} · ${item.origin}`}
+              onSelected={(item, index) => this.setState({
+                valueObject: item.id,
+                valueObjectLabel: `${item.name} (${item.origin})`,
+              })}
+              />
+          } topSeparator='full' />
+        <ListRow
+          title='Selected id (getItemValue)'
+          detail={<Label text={valueObject || 'None'} />}
+        />
+        <ListRow
+          title='Selected label (getItemText)'
+          detail={<Label text={valueObjectLabel || 'None'} />}
+          bottomSeparator='full'
+        />
         <View style={{height: 20}} />
         <ListRow
           title='IconTintColor'
