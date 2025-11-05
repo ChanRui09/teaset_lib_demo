@@ -14,6 +14,21 @@ export default class ActionSheetExample extends NavigationPage {
     title: 'ActionSheet',
     showBackButton: true,
   };
+  
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+    if (this.customKey) {
+      Overlay.hide(this.customKey);
+      this.customKey = null;
+    }
+    if (this.typeKey) {
+      Overlay.hide(this.typeKey);
+      this.typeKey = null;
+    }
+  }
 
   show(modal) {
     let items = [
@@ -22,7 +37,7 @@ export default class ActionSheetExample extends NavigationPage {
       {title: 'Disabled', disabled: true},
     ];
     let cancelItem = {title: 'Cancel'};
-    ActionSheet.show(items, cancelItem, {modal});
+    this.overlayKey = ActionSheet.show(items, cancelItem, {modal});
   }
 
   showSeparator() {
@@ -85,7 +100,7 @@ export default class ActionSheetExample extends NavigationPage {
       },
     ];
     let cancelItem = {title: '取消'};
-    ActionSheet.show(items, cancelItem);
+    this.overlayKey = ActionSheet.show(items, cancelItem);
   }
 
   showItemTypes() {

@@ -50,6 +50,34 @@ export default class OverlayExample extends NavigationPage {
     });
   }
 
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+    if (this.overlayPullView) {
+      this.overlayPullView.close();
+    }
+    if (this.overlayView) {
+      this.overlayView.close();
+    }
+    if (this.overlayPopView) {
+      this.overlayPopView.close();
+    }
+    if (this.overlayViewCallbacksRef) {
+      this.overlayViewCallbacksRef.close();
+    }
+    if (this.customPopView) {
+      this.customPopView.close();
+    }
+    if (this.pullAdvancedRef) {
+      this.pullAdvancedRef.close();
+    }
+    if (this.keyboardOverlay) {
+      this.keyboardOverlay.close();
+    }
+  }
+
   logOverlayEvent(event, detail = '', duration = 1600) {
     const message = detail ? `${event}: ${detail}` : event;
     console.log(`[OverlayExample] ${message}`);
@@ -249,7 +277,7 @@ export default class OverlayExample extends NavigationPage {
           <Label style={{color: black ? '#fff' : '#000'}} size='lg' text={direction + ' ' + align} />
         </Overlay.PopoverView>
       );
-      Overlay.show(overlayView);
+      this.overlayKey = Overlay.show(overlayView);
     });
   }
 
@@ -263,7 +291,7 @@ export default class OverlayExample extends NavigationPage {
         </View>
       </Overlay.PullView>
     );
-    Overlay.show(overlayView);
+    this.overlayKey = Overlay.show(overlayView);
   }
 
   showAutoKeyboard() {
@@ -327,7 +355,7 @@ export default class OverlayExample extends NavigationPage {
           <Label style={{color: '#fff', fontSize: 12}} text={useAutoDirection ? '空间不足时会自动反向' : '强制按请求方向显示'} />
         </Overlay.PopoverView>
       );
-      Overlay.show(overlayView);
+      this.overlayKey = Overlay.show(overlayView);
     });
   }
 

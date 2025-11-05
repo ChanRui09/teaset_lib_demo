@@ -44,13 +44,20 @@ export default class CarouselExample extends NavigationPage {
       scrollEventRate: 0,
     });
   }
+  
+  componentWillUnmount() {
+    if (this.pickerKey) {
+      PullPicker.hide(this.pickerKey);
+    }
+  }
 
   selectControl() {
-    PullPicker.show(
+    this.pickerKey = PullPicker.show(
       'Control',
       this.controlItems,
       this.controlItems.indexOf(this.state.control),
       (item, index) => {
+        this.pickerKey = null;
         this.setState({control: item});
         console.log('[Carousel] Control changed to:', item);
       }
@@ -58,11 +65,12 @@ export default class CarouselExample extends NavigationPage {
   }
 
   selectDirection() {
-    PullPicker.show(
+    this.pickerKey = PullPicker.show(
       'Direction',
       this.directionItems,
       this.directionItems.indexOf(this.state.direction),
       (item, index) => {
+        this.pickerKey = null;
         this.setState({direction: item});
         console.log('[Carousel] Direction changed to:', item);
       }
@@ -70,11 +78,12 @@ export default class CarouselExample extends NavigationPage {
   }
 
   selectScrollEventThrottle() {
-    PullPicker.show(
+    this.pickerKey = PullPicker.show(
       'Scroll Event Throttle',
       this.scrollEventThrottleItems,
       this.scrollEventThrottleItems.indexOf(this.state.scrollEventThrottle),
       (item, index) => {
+        this.pickerKey = null;
         this.setState({
           scrollEventThrottle: item,
           scrollEventCounter: 0,

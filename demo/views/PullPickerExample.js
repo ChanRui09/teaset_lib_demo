@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Text} from 'react-native';
 
-import {NavigationPage, ListRow, PullPicker, Label} from 'teaset';
+import {NavigationPage, ListRow, PullPicker, Label, Overlay} from 'teaset';
 
 export default class PullPickerExample extends NavigationPage {
 
@@ -45,9 +45,16 @@ export default class PullPickerExample extends NavigationPage {
       citySelectedIndex: null,
     });
   }
+    
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+  }
 
   show() {
-    PullPicker.show(
+    this.overlayKey = PullPicker.show(
       'Select item',
       this.items,
       this.state.selectedIndex,
@@ -56,7 +63,7 @@ export default class PullPickerExample extends NavigationPage {
   }
 
   showModal() {
-    PullPicker.show(
+    this.overlayKey = PullPicker.show(
       'Select item',
       this.items,
       this.state.modalSelectedIndex,
@@ -66,7 +73,7 @@ export default class PullPickerExample extends NavigationPage {
   }
 
   showWithGetItemText() {
-    PullPicker.show(
+    this.overlayKey = PullPicker.show(
       '选择城市',
       this.objectItems,
       this.state.citySelectedIndex,
