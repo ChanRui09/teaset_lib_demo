@@ -15,14 +15,26 @@ export default class ModalIndicatorExample extends NavigationPage {
     showBackButton: true,
   };
 
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    ModalIndicator.hide()
+  }
+
   show() {
     let secs = 5;
     ModalIndicator.show(`Close after ${secs} sec(s)`);
-    let timer = setInterval(() => {
+    this.timer = setInterval(() => {
       secs--;
       ModalIndicator.show(`Close after ${secs} sec(s)`);
       if (secs < 0) {
-        clearInterval(timer);
+        clearInterval(this.timer);
         ModalIndicator.hide();
       }
     }, 1000);
@@ -38,11 +50,11 @@ export default class ModalIndicatorExample extends NavigationPage {
   showWithNumberText() {
     let progress = 0;
     ModalIndicator.show(progress);
-    let timer = setInterval(() => {
+    this.timer = setInterval(() => {
       progress += 10;
       ModalIndicator.show(`${progress}%`);
       if (progress >= 100) {
-        clearInterval(timer);
+        clearInterval(this.timer);
         setTimeout(() => ModalIndicator.hide(), 500);
       }
     }, 300);
@@ -63,90 +75,90 @@ export default class ModalIndicatorExample extends NavigationPage {
 
   // 演示 position 属性 - top
   showAtTop() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='顶部位置 (position: top)'
         position='top'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   // 演示 position 属性 - bottom
   showAtBottom() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='底部位置 (position: bottom)'
         position='bottom'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   // 演示 position 属性 - center
   showAtCenter() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='中心位置 (position: center)'
         position='center'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   // 演示 size 属性 - small
   showSmallSize() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='小尺寸指示器 (size: small)'
         size='small'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   // 演示 size 属性 - large
   showLargeSize() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='大尺寸指示器 (size: large)'
         size='large'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   // 演示 color 属性 - 自定义颜色
   showCustomColor() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='红色指示器 (color: #ff0000)'
         color='#ff0000'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   // 演示 color 属性 - 蓝色
   showBlueColor() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='蓝色指示器 (color: #0066ff)'
         color='#0066ff'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   // 演示 color 属性 - 绿色
   showGreenColor() {
-    let key = Overlay.show(
+    this.overlayKey = Overlay.show(
       <ModalIndicator.IndicatorView
         text='绿色指示器 (color: #00cc00)'
         color='#00cc00'
       />
     );
-    setTimeout(() => Overlay.hide(key), 3000);
+    setTimeout(() => Overlay.hide(this.overlayKey), 3000);
   }
 
   renderPage() {

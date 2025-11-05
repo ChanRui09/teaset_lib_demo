@@ -27,8 +27,12 @@ export default class ToastExample extends NavigationPage {
     });
   }
 
+  componentWillUnmount() {
+    this.hideCustom();
+  }
+
   showModal() {
-    Toast.show({
+    ToastExample.toastKey = Toast.show({
       text: 'Toast modal',
       icon: <ActivityIndicator size='large' color={Theme.toastIconTintColor} />,
       position: 'center',
@@ -38,11 +42,11 @@ export default class ToastExample extends NavigationPage {
     });
   }
 
-  static customKey = null;
+  static toastKey = null;
 
   showCustom() {
-    if (ToastExample.customKey) return;
-    ToastExample.customKey = Toast.show({
+    if (ToastExample.toastKey) return;
+    ToastExample.toastKey = Toast.show({
       text: 'Toast custom',
       icon: <ActivityIndicator size='large' color={Theme.toastIconTintColor} />,
       position: 'top',
@@ -51,9 +55,9 @@ export default class ToastExample extends NavigationPage {
   }
 
   hideCustom() {
-    if (!ToastExample.customKey) return;
-    Toast.hide(ToastExample.customKey);
-    ToastExample.customKey = null;
+    if (!ToastExample.toastKey) return;
+    Toast.hide(ToastExample.toastKey);
+    ToastExample.toastKey = null;
   }
 
   cycleDefaultPosition() {
@@ -62,7 +66,7 @@ export default class ToastExample extends NavigationPage {
     const nextValue = order[(currentIndex + 1) % order.length];
     Toast.defaultPosition = nextValue;
     this.setState({defaultPosition: nextValue}, () => {
-      Toast.info(`defaultPosition → ${nextValue}`);
+      ToastExample.toastKey = Toast.info(`defaultPosition → ${nextValue}`);
     });
   }
 
@@ -72,7 +76,7 @@ export default class ToastExample extends NavigationPage {
     const nextValue = order[(currentIndex + 1) % order.length];
     Toast.defaultDuration = nextValue;
     this.setState({defaultDuration: nextValue}, () => {
-      Toast.info(`defaultDuration → ${nextValue}`);
+      ToastExample.toastKey = Toast.info(`defaultDuration → ${nextValue}`);
     });
   }
 
@@ -98,38 +102,38 @@ export default class ToastExample extends NavigationPage {
 
   showSuccessWithDefaults() {
     const {defaultPosition, defaultDuration} = this.state;
-    Toast.success(`默认值 position=${defaultPosition} duration=${defaultDuration}`);
+    ToastExample.toastKey = Toast.success(`默认值 position=${defaultPosition} duration=${defaultDuration}`);
   }
 
   showSuccessWithPosition(position) {
-    Toast.success(`覆盖 position=${position}`, undefined, position);
+    ToastExample.toastKey = Toast.success(`覆盖 position=${position}`, undefined, position);
   }
 
   showSuccessWithDuration(duration) {
-    Toast.success(`覆盖 duration=${duration}`, duration);
+    ToastExample.toastKey = Toast.success(`覆盖 duration=${duration}`, duration);
   }
 
   showMessageWithPosition(position) {
-    Toast.message(`Toast.message position=${position}`, undefined, position);
+    ToastExample.toastKey = Toast.message(`Toast.message position=${position}`, undefined, position);
   }
 
   showMessageWithDuration(duration) {
-    Toast.message(`Toast.message duration=${duration}`, duration);
+    ToastExample.toastKey = Toast.message(`Toast.message duration=${duration}`, duration);
   }
 
   showPositionTest() {
     let {testPosition} = this.state;
-    Toast.success(`位置: ${testPosition}`, 'short', testPosition);
+    ToastExample.toastKey = Toast.success(`位置: ${testPosition}`, 'short', testPosition);
   }
 
   showDurationTest() {
     let {testDuration} = this.state;
-    Toast.info(`显示时长: ${testDuration}`, testDuration, 'center');
+    ToastExample.toastKey = Toast.info(`显示时长: ${testDuration}`, testDuration, 'center');
   }
 
   showMessageWithDefaults() {
     const {messageDefaultPosition, messageDefaultDuration} = this.state;
-    Toast.message(`默认值 position=${messageDefaultPosition} duration=${messageDefaultDuration}`);
+    ToastExample.toastKey = Toast.message(`默认值 position=${messageDefaultPosition} duration=${messageDefaultDuration}`);
   }
 
   renderPage() {
@@ -191,13 +195,13 @@ export default class ToastExample extends NavigationPage {
         <ListRow title='Message (duration=short)' onPress={() => this.showMessageWithDuration('short')} />
         <ListRow title='Message (duration=long)' onPress={() => this.showMessageWithDuration('long')} bottomSeparator='full' />
         <View style={{height: 20}} />
-        <ListRow title='Message' onPress={() => Toast.message('Toast message')} topSeparator='full' />
-        <ListRow title='Success' onPress={() => Toast.success('Toast success')} />
-        <ListRow title='Fail' onPress={() => Toast.fail('Toast fail')} />
-        <ListRow title='Smile' onPress={() => Toast.smile('Toast smile')} />
-        <ListRow title='Sad' onPress={() => Toast.sad('Toast sad')} />
-        <ListRow title='Info' onPress={() => Toast.info('Toast info')} />
-        <ListRow title='Stop' onPress={() => Toast.stop('Toast stop')} bottomSeparator='full' />
+        <ListRow title='Message' onPress={() => ToastExample.toastKey = Toast.message('Toast message')} topSeparator='full' />
+        <ListRow title='Success' onPress={() => ToastExample.toastKey = Toast.success('Toast success')} />
+        <ListRow title='Fail' onPress={() => ToastExample.toastKey = Toast.fail('Toast fail')} />
+        <ListRow title='Smile' onPress={() => ToastExample.toastKey = Toast.smile('Toast smile')} />
+        <ListRow title='Sad' onPress={() => ToastExample.toastKey = Toast.sad('Toast sad')} />
+        <ListRow title='Info' onPress={() => ToastExample.toastKey = Toast.info('Toast info')} />
+        <ListRow title='Stop' onPress={() => ToastExample.toastKey = Toast.stop('Toast stop')} bottomSeparator='full' />
         <View style={{height: 20}} />
         <ListRow title='Modal' onPress={() => this.showModal()} topSeparator='full' bottomSeparator='full' />
         <View style={{height: 20}} />

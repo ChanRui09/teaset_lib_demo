@@ -23,6 +23,13 @@ export default class DrawerExample extends NavigationPage {
     });
   }
 
+  componentWillUnmount() {
+    if (this.drawer) {
+      this.drawer.close();
+      this.drawer = null;
+    }
+  }
+
   show(side) {
     let {rootTransform} = this.state;
     if (side == 'left' || side == 'right') {

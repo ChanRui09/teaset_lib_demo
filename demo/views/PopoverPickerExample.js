@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Text} from 'react-native';
 
-import {NavigationPage, ListRow, PopoverPicker, Label} from 'teaset';
+import {NavigationPage, ListRow, PopoverPicker, Label, Overlay} from 'teaset';
 
 export default class PopoverPickerExample extends NavigationPage {
 
@@ -52,10 +52,17 @@ export default class PopoverPickerExample extends NavigationPage {
       noShadowSelectedIndex: null,
     });
   }
+  
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+  }
 
   show(view) {
     view.measure((x, y, width, height, pageX, pageY) => {
-      PopoverPicker.show(
+      this.overlayKey = PopoverPicker.show(
         {x: pageX, y: pageY, width, height},
         this.items,
         this.state.selectedIndex,
@@ -66,7 +73,7 @@ export default class PopoverPickerExample extends NavigationPage {
 
   showModal(view) {
     view.measure((x, y, width, height, pageX, pageY) => {
-      PopoverPicker.show(
+      this.overlayKey = PopoverPicker.show(
         {x: pageX, y: pageY, width, height},
         this.items,
         this.state.modalSelectedIndex,
@@ -78,7 +85,7 @@ export default class PopoverPickerExample extends NavigationPage {
 
   showWithGetItemText(view) {
     view.measure((x, y, width, height, pageX, pageY) => {
-      PopoverPicker.show(
+      this.overlayKey = PopoverPicker.show(
         {x: pageX, y: pageY, width, height},
         this.fruitItems,
         this.state.fruitSelectedIndex,
@@ -102,7 +109,7 @@ export default class PopoverPickerExample extends NavigationPage {
 
   showWithShadow(view) {
     view.measure((x, y, width, height, pageX, pageY) => {
-      PopoverPicker.show(
+      this.overlayKey = PopoverPicker.show(
         {x: pageX, y: pageY, width, height},
         this.items,
         this.state.shadowSelectedIndex,
@@ -114,7 +121,7 @@ export default class PopoverPickerExample extends NavigationPage {
 
   showWithoutShadow(view) {
     view.measure((x, y, width, height, pageX, pageY) => {
-      PopoverPicker.show(
+      this.overlayKey = PopoverPicker.show(
         {x: pageX, y: pageY, width, height},
         this.items,
         this.state.noShadowSelectedIndex,

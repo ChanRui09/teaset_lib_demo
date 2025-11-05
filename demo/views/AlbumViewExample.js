@@ -43,8 +43,19 @@ export default class AlbumViewExample extends NavigationPage {
     });
   }
 
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+    if (this.toastKey) {
+      Toast.hide(this.toastKey);
+      this.toastKey = null;
+    }
+  }
+
   showToast(message, duration = 1500) {
-    Toast.message(message, {position: 'top', duration});
+    this.toastKey = Toast.message(message, {position: 'top', duration});
   }
 
   appendEventLog(eventName, detail = '', extraState = {}) {
@@ -135,7 +146,7 @@ export default class AlbumViewExample extends NavigationPage {
           <StatusBar animated={false} hidden={true} />
         </Overlay.PopView>
       );
-      Overlay.show(overlayView);
+      this.overlayKey = Overlay.show(overlayView);
     });
 
   }

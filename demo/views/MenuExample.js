@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {View, Text, ScrollView} from 'react-native';
 
-import {NavigationPage, Menu, Button, Theme, Label} from 'teaset';
+import {NavigationPage, Menu, Button, Theme, Label, Overlay} from 'teaset';
 
 export default class MenuExample extends NavigationPage {
 
@@ -28,6 +28,13 @@ export default class MenuExample extends NavigationPage {
     this.shadowRef = React.createRef();
     this.noShadowRef = React.createRef();
   }
+    
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+  }
 
   show(view, align) {
     view.measure((x, y, width, height, pageX, pageY) => {
@@ -36,7 +43,7 @@ export default class MenuExample extends NavigationPage {
         {title: 'Edit', icon: require('../icons/edit.png'), onPress: () => alert('Edit')},
         {title: 'Remove', icon: require('../icons/trash.png'), onPress: () => alert('Remove')},
       ];
-      Menu.show({x: pageX, y: pageY, width, height}, items, {align});
+      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items, {align});
     });
   }
 
@@ -56,7 +63,7 @@ export default class MenuExample extends NavigationPage {
           onPress: () => alert('Custom icon')
         },
       ];
-      Menu.show({x: pageX, y: pageY, width, height}, items);
+      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items);
     });
   }
 
@@ -82,7 +89,7 @@ export default class MenuExample extends NavigationPage {
         },
         {title: '普通标题', icon: require('../icons/edit.png'), onPress: () => alert('普通')},
       ];
-      Menu.show({x: pageX, y: pageY, width, height}, items);
+      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items);
     });
   }
 
@@ -93,7 +100,7 @@ export default class MenuExample extends NavigationPage {
         {title: 'Edit', icon: require('../icons/edit.png'), onPress: () => alert('Edit')},
         {title: 'Remove', icon: require('../icons/trash.png'), onPress: () => alert('Remove')},
       ];
-      Menu.show({x: pageX, y: pageY, width, height}, items, {shadow: true});
+      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items, {shadow: true});
     });
   }
 
@@ -104,7 +111,7 @@ export default class MenuExample extends NavigationPage {
         {title: 'Edit', icon: require('../icons/edit.png'), onPress: () => alert('Edit')},
         {title: 'Remove', icon: require('../icons/trash.png'), onPress: () => alert('Remove')},
       ];
-      Menu.show({x: pageX, y: pageY, width, height}, items, {shadow: false});
+      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items, {shadow: false});
     });
   }
 
