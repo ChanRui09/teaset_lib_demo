@@ -43,6 +43,11 @@ export default class BadgeExample extends NavigationPage {
         } />
         <ListRow title='Type dot' detail={<Badge type='dot' />} bottomSeparator='full' />
         <View style={{height: 20}} />
+        <ListRow title='Count string' detail={
+          <View style={{flexDirection: 'row'}}>
+            <Badge style={{backgroundColor: '#5bc0de'}} type='square' count='hhhhh' />
+          </View>
+        } topSeparator='full' bottomSeparator='full' />
         <ListRow title='CountStyle' detail={
           <View style={{flexDirection: 'row'}}>
             <Badge count={6} countStyle={{color: '#fff', fontSize: 16, fontWeight: 'bold'}} />
@@ -60,7 +65,7 @@ export default class BadgeExample extends NavigationPage {
           </View>
         } bottomSeparator='full' />
         <View style={{height: 20}} />
-        <ListRow title='Custom' detail={
+        <ListRow title='Count string' detail={
           <View style={{flexDirection: 'row'}}>
             <Badge style={{backgroundColor: '#5bc0de'}} type='square' count='券' />
             <View style={{width: 4}} />

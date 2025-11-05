@@ -31,14 +31,14 @@ export default class ButtonExample extends NavigationPage {
         <ListRow title='Size lg' detail={<Button title='Button' size='lg'/>} />
         <ListRow title='Size xl' detail={<Button title='Button' size='xl'/>} bottomSeparator='full' />
         <View style={{height: 20}} />
-        <ListRow title='Type default disabled' detail={<Button title='Button' disabled={true} />} topSeparator='full' />
-        <ListRow title='Type primary disabled' detail={<Button title='Button' type='primary' disabled={true} />} />
-        <ListRow title='Type secondary disabled' detail={<Button title='Button' type='secondary' disabled={true} />} />
-        <ListRow title='Type danger disabled' detail={<Button title='Button' type='danger' disabled={true} />} />
-        <ListRow title='Type link disabled' detail={<Button title='Button' type='link' disabled={true} />} bottomSeparator='full' />
+        <ListRow title='disabled(true)' detail={<Button title='Button' disabled={true} />} topSeparator='full' />
+        <ListRow title='disabled(false)' detail={<Button title='Button' disabled={false} />} topSeparator='full' />
         <View style={{height: 20}} />
         <ListRow title='titleStyle' detail={<Button title='Custom Text' titleStyle={{color: '#8a6d3b', fontSize: 18, fontWeight: 'bold'}} />} topSeparator='full' />
         <ListRow title='onPress event' detail={<Button title='Click Me' type='primary' onPress={() => alert('Button Pressed!')} />} bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='Title number' detail={<Button title={123} type='secondary' />} topSeparator='full' />
+        <ListRow title='Title element(Label)' detail={<Button title={<Label text='Element Title' />} type='link' />} bottomSeparator='full' />
         <View style={{height: 20}} />
         <ListRow title='Custom' detail={
           <Button style={{backgroundColor: '#rgba(238, 169, 91, 0.1)', borderColor: '#8a6d3b'}}>

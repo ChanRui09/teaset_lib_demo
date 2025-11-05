@@ -45,6 +45,7 @@ export default class SelectExample extends NavigationPage {
       {id: '1', name: 'Jasmine', origin: 'Fujian'},
       {id: '2', name: 'Tieguanyin', origin: 'Beijing'},
     ];
+    this.iconAsset = require('../icons/config.png');
     Object.assign(this.state, {
       valueSM: null,
       valueMD: null,
@@ -60,11 +61,44 @@ export default class SelectExample extends NavigationPage {
       valueCallback: null,
       valueObject: null,
       valueObjectLabel: null,
+      valueIconDefault: null,
+      valueIconNone: null,
+      valueIconAsset: null,
+      valueStyled: null,
+      valueIconElement: null,
+      valueEditableTrue: null,
+      valueDisabledFalse: null,
     });
   }
 
+  getTeaValue = item => item.id;
+
+  getTeaLabel = item => `${item.name} · ${item.origin}`;
+
   renderPage() {
-    let {valueSM, valueMD, valueLG, valueAuto, valuePull, valuePopover, valueReadonly, valueDisable, valueCustom, valueIconTintColor, valuePlaceholderColor, valueCallback, valueObject, valueObjectLabel} = this.state;
+    let {
+      valueSM,
+      valueMD,
+      valueLG,
+      valueAuto,
+      valuePull,
+      valuePopover,
+      valueReadonly,
+      valueDisable,
+      valueCustom,
+      valueIconTintColor,
+      valuePlaceholderColor,
+      valueCallback,
+      valueObject,
+      valueObjectLabel,
+      valueIconDefault,
+      valueIconNone,
+      valueIconAsset,
+      valueStyled,
+      valueIconElement,
+      valueEditableTrue,
+      valueDisabledFalse,
+    } = this.state;
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
@@ -152,7 +186,7 @@ export default class SelectExample extends NavigationPage {
           } />
         <View style={{height: 20}} />
         <ListRow
-          title='Readonly'
+          title='Readonly(editable={fasle})'
           detail={
             <Select
               style={{width: 200}}
@@ -162,7 +196,23 @@ export default class SelectExample extends NavigationPage {
               />
           } topSeparator='full' />
         <ListRow
-          title='Disabled'
+          title='editable(true)'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueEditableTrue}
+              items={this.items}
+              placeholder='Editable selects'
+              editable={true}
+              pickerType='pull'
+              pickerTitle='Editable demo'
+              onSelected={(item, index) => {this.setState({valueEditableTrue: item});}}
+              />
+          } bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow
+          title='Disabled(true)'
           detail={
             <Select
               style={{width: 200}}
@@ -170,6 +220,21 @@ export default class SelectExample extends NavigationPage {
               placeholder='Select item'
               disabled={true}
               value={valueDisable}
+              />
+          } topSeparator='full' />
+        <ListRow
+          title='Disabled(false)'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueDisabledFalse}
+              items={this.items}
+              placeholder='Active select'
+              disabled={false}
+              pickerType='pull'
+              pickerTitle='Disabled false demo'
+              onSelected={(item, index) => this.setState({valueDisabledFalse: item})}
               />
           } bottomSeparator='full' />
         <View style={{height: 20}} />
@@ -194,21 +259,31 @@ export default class SelectExample extends NavigationPage {
         <ListRow
           title='Data'
           detail={
-            <Select
-              style={{width: 200}}
-              size='md'
-              value={valueObject}
-              items={this.objectItems}
-              placeholder='Select tea'
-              pickerTitle='Data demo'
-              getItemValue={(item, index) => item.id}
-              getItemText={(item, index) => `${item.name} · ${item.origin}`}
-              onSelected={(item, index) => this.setState({
-                valueObject: item.id,
-                valueObjectLabel: `${item.name} (${item.origin})`,
-              })}
-              />
+            <View style={{width: 200}}>
+              <Select
+                style={{marginBottom: 6}}
+                size='md'
+                value={valueObject}
+                items={this.objectItems}
+                placeholder='Select tea'
+                pickerTitle='Data demo'
+                getItemValue={this.getTeaValue}
+                getItemText={this.getTeaLabel}
+                onSelected={(item, index) => this.setState({
+                  valueObject: this.getTeaValue(item),
+                  valueObjectLabel: `${item.name} (${item.origin})`,
+                })}
+                />
+            </View>
           } topSeparator='full' />
+          <Label
+              style={{color: '#9e9e9e', fontSize: 10, lineHeight: 16}}
+              text=' 示例自定义 getItemValue 返回 item.id 作为存储值，getItemText 拼接名称与产地'
+          />
+          <Label
+              style={{color: '#9e9e9e', fontSize: 10, lineHeight: 16}}
+              text=' 可按需替换成任意逻辑或元素'
+          />
         <ListRow
           title='Selected id (getItemValue)'
           detail={<Label text={valueObject || 'None'} />}
@@ -219,6 +294,68 @@ export default class SelectExample extends NavigationPage {
           bottomSeparator='full'
         />
         <View style={{height: 20}} />
+        <ListRow
+          title='Icon default'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueIconDefault}
+              items={this.items}
+              icon='default'
+              placeholder='Uses default chevron'
+              pickerTitle='Icon default'
+              onSelected={(item, index) => this.setState({valueIconDefault: item})}
+              />
+          } topSeparator='full' />
+        <ListRow
+          title='Icon none'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueIconNone}
+              items={this.items}
+              icon='none'
+              placeholder='No icon'
+              pickerTitle='Icon none'
+              onSelected={(item, index) => this.setState({valueIconNone: item})}
+              />
+          } />
+        <ListRow
+          title='Icon asset(Image)'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueIconAsset}
+              items={this.items}
+              icon={this.iconAsset}
+              iconTintColor={null}
+              placeholder='Bundled icon'
+              pickerTitle='Icon asset'
+              onSelected={(item, index) => this.setState({valueIconAsset: item})}
+              />
+          } />
+        <ListRow
+          title='Icon element(View-Text)'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueIconElement}
+              items={this.items}
+              icon={
+                <View style={{width: 18, height: 18, borderRadius: 9, backgroundColor: '#673ab7', alignItems: 'center', justifyContent: 'center'}}>
+                  <Text style={{color: '#fff', fontSize: 12}}>★</Text>
+                </View>
+              }
+              placeholder='Element icon'
+              pickerTitle='Icon element'
+              onSelected={(item, index) => this.setState({valueIconElement: item})}
+              />
+          }
+        />
         <ListRow
           title='IconTintColor'
           detail={
@@ -233,6 +370,21 @@ export default class SelectExample extends NavigationPage {
               onSelected={(item, index) => this.setState({valueIconTintColor: item})}
               />
           } topSeparator='full' />
+        <ListRow
+          title='valueStyle'
+          detail={
+            <Select
+              style={{width: 200}}
+              size='md'
+              value={valueStyled}
+              items={this.items}
+              valueStyle={{flex: 1, color: '#4caf50', textAlign: 'right', fontWeight: '600'}}
+              placeholder='Styled value'
+              pickerTitle='valueStyle'
+              onSelected={(item, index) => this.setState({valueStyled: item})}
+              />
+          }
+        />
         <ListRow
           title='PlaceholderTextColor'
           detail={

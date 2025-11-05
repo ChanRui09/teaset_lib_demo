@@ -18,64 +18,69 @@ export default class SearchInputExample extends NavigationPage {
   constructor(props) {
     super(props);
     Object.assign(this.state, {
-      valueControlled: 'Search me',
-      valueCustom: null,
+      valueTextInput: 'Search me',
+      valueInputStyled: 'Styled content',
       valueCallback: '',
     });
   }
 
   renderPage() {
-    let {valueControlled, valueCustom, valueCallback} = this.state;
+    let {valueTextInput, valueInputStyled, valueCallback} = this.state;
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
         <ListRow title='Default' detail={
-          <SearchInput style={{width: 200}} placeholder='Enter text' clearButtonMode='while-editing' />
+          <SearchInput
+            style={{width: 200}}
+            value={valueTextInput}
+            placeholder='Supports TextInput props'
+            clearButtonMode='while-editing'
+            onChangeText={text => this.setState({valueTextInput: text})}
+          />
         } topSeparator='full' bottomSeparator='full' />
-        <ListRow title='Controlled value' detail={
-          <SearchInput
-            style={{width: 200}}
-            value={valueControlled}
-            placeholder='Controlled input'
-            onChangeText={text => this.setState({valueControlled: text})}
-          />
-        } />
-        <ListRow title='PlaceholderTextColor' detail={
-          <SearchInput
-            style={{width: 200}}
-            placeholder='Accent placeholder'
-            placeholderTextColor='#ff9800'
-          />
-        } bottomSeparator='full' />
         <View style={{height: 20}} />
-        <ListRow title='Readonly (editable=false)' detail={
-          <SearchInput style={{width: 200}} placeholder='Enter text' clearButtonMode='while-editing' value='Readonly' editable={false} />
+        <ListRow title='style' detail={
+          <SearchInput
+            style={{width: 200, backgroundColor: '#f5f5f5', borderColor: '#2196f3', borderWidth: 1, borderRadius: 6}}
+            placeholder='Container styled'
+          />
         } topSeparator='full' />
-        <ListRow title='Disabled' detail={
-          <SearchInput style={{width: 200}} placeholder='Enter text' clearButtonMode='while-editing' value='Disabled' disabled={true} />
-        } />
-        <ListRow title='Icon size' detail={
-          <SearchInput style={{width: 200}} placeholder='Large icon' iconSize={24} />
-        } bottomSeparator='full' />
-        <View style={{height: 20}} />
-        <ListRow title='UnderlineColorAndroid' detail={
+        <ListRow title='inputStyle' detail={
           <SearchInput
             style={{width: 200}}
-            placeholder='Colored underline (Android)'
+            value={valueInputStyled}
+            inputStyle={{color: '#4caf50', fontSize: 18, textAlign: 'right'}}
+            placeholder='Input styled'
+            onChangeText={text => this.setState({valueInputStyled: text})}
+          />
+        } />
+        <ListRow title='iconSize small(14)' detail={
+          <SearchInput style={{width: 200}} placeholder='Small icon' iconSize={14} />
+        } />
+        <ListRow title='iconSize large(28)' detail={
+          <SearchInput style={{width: 200}} placeholder='Large icon' iconSize={28} />
+        } bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='disabled' detail={
+          <SearchInput style={{width: 200}} placeholder='Disabled input' value='Disabled' disabled={true} />
+        } topSeparator='full' />
+        <ListRow title='disabled (default false)' detail={
+          <SearchInput style={{width: 200}} placeholder='Interactive input' />
+        } bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='underlineColorAndroid' detail={
+          <SearchInput
+            style={{width: 200}}
+            placeholder='string'
             underlineColorAndroid='#ff5722'
           />
         } topSeparator='full' bottomSeparator='full' />
-        <View style={{height: 20}} />
-        <ListRow title='Custom style & inputStyle' detail={
+        <ListRow title='underlineColorAndroid' detail={
           <SearchInput
-            style={{width: 200, height: 40, backgroundColor: '#rgba(238, 169, 91, 0.1)', borderColor: '#8a6d3b'}}
-            inputStyle={{color: '#8a6d3b', fontSize: 18}}
-            iconSize={15}
-            value={valueCustom}
-            placeholder='Custom'
-            placeholderTextColor='#aaa'
-            onChangeText={text => this.setState({valueCustom: text})}
-            />
+            style={{width: 200}}
+            placeholder='rgba'
+            underlineColorAndroid='rgba(115, 228, 22, 1)'
+          />
         } topSeparator='full' bottomSeparator='full' />
         <View style={{height: 20}} />
         <ListRow title='OnChangeText callback' detail={

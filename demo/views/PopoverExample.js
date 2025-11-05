@@ -92,13 +92,18 @@ export default class PopoverExample extends NavigationPage {
               <Label style={{color: '#000'}} text='top' />
             </Popover>
           </View>
-          <View style={{flex: 1, paddingLeft: 8, alignItems: 'flex-start'}}>
+          <View style={{flex: 1, paddingLeft: 8, alignItems: 'flex-start',justifyContent: 'center'}}>
             <Popover style={styles.popoverStyle} arrow='topLeft'>
               <Label style={{color: '#000'}} text='topLeft' />
             </Popover>
           </View>
         </View>
-
+        <View style={{height: 20}} />
+        <View style={{flex: 1, paddingLeft: 8, alignItems: 'flex-start',alignItems: 'center', justifyContent: 'center'}}>
+            <Popover style={styles.popoverStyle} arrow='none'>
+              <Label style={{color: '#000'}} text='Corner(none)' />
+            </Popover>
+          </View>
         <View style={{height: 20}} />
         <ListRow title='PaddingCorner 4' detail={
           <Popover style={styles.popoverStyle} arrow='topLeft' paddingCorner={4}>

@@ -22,12 +22,18 @@ export default class CheckboxExample extends NavigationPage {
       checkedMD: false,
       checkedLG: false,
       checkedEmpty: false,
-      checkedDisable: true,
+      checkedDisableT: true,
+      checkedDisableF: true,
       checkedCustom: false,
-      checkedDefault: false,
-      checkedIconStyle: false,
       checkedHitSlop: false,
       checkedOnChange: false,
+      checkedTitleNumber: false,
+      checkedTitleElement: false,
+      checkedTitleStyleBold: false,
+      checkedTitleStyleSpaced: false,
+      checkedIconRequire: false,
+      checkedIconUri: false,
+      checkedHitSlopXL: false,
     });
   }
 
@@ -66,38 +72,102 @@ export default class CheckboxExample extends NavigationPage {
             onChange={value => this.setState({checkedEmpty: value})}
             />
         } topSeparator='full' />
-        <ListRow title='Disabled' detail={
+        <ListRow title='Title number' detail={
+          <Checkbox
+            title={2025}
+            checked={this.state.checkedTitleNumber}
+            onChange={value => this.setState({checkedTitleNumber: value})}
+            />
+        } />
+        <ListRow title='Title element(Label)' detail={
+          <Checkbox
+            title={<Label text='Element Title' />}
+            checked={this.state.checkedTitleElement}
+            onChange={value => this.setState({checkedTitleElement: value})}
+            />
+        } />
+        <ListRow title='titleStyle bold' detail={
+          <Checkbox
+            title='Bold Text'
+            titleStyle={{fontWeight: '700', fontSize: 16}}
+            checked={this.state.checkedTitleStyleBold}
+            onChange={value => this.setState({checkedTitleStyleBold: value})}
+            />
+        } />
+        <ListRow title='titleStyle spaced' detail={
+          <Checkbox
+            title='Spaced Text'
+            titleStyle={{letterSpacing: 2, color: '#3f51b5'}}
+            checked={this.state.checkedTitleStyleSpaced}
+            onChange={value => this.setState({checkedTitleStyleSpaced: value})}
+            />
+        } />
+        <ListRow title='Disabled(true)' detail={
           <Checkbox
             title='Checkbox'
             disabled={true}
-            checked={this.state.checkedDisable}
-            onChange={value => this.setState({checkedDisable: value})}
+            checked={this.state.checkedDisableT}
+            onChange={value => this.setState({checkedDisableT: value})}
+            />
+        } bottomSeparator='full' />
+        <ListRow title='Disabled(false)' detail={
+          <Checkbox
+            title='Checkbox'
+            disabled={false}
+            checked={this.state.checkedDisableF}
+            onChange={value => this.setState({checkedDisableF: value})}
             />
         } bottomSeparator='full' />
         <View style={{height: 20}} />
-        <ListRow title='defaultChecked' detail={
-          <Checkbox
-            title='Default Checked'
-            defaultChecked={true}
-            />
+        <ListRow title='defaultChecked(true)' detail={
+          <View style={{alignItems: 'flex-end'}}>
+            <Checkbox
+              title='Default Checked'
+              defaultChecked={true}
+              />
+          </View>
         } topSeparator='full' />
-        <ListRow title='checkedIconStyle' detail={
+        <Label
+            style={{color: '#9e9e9e', fontSize: 10, marginTop: 6, textAlign: 'left'}}
+            text='  defaultChecked 仅决定初始勾选，当前实现中为 true 时点击不会反选'
+            />
+        <ListRow title='defaultchecked(false)' detail={
+          <View style={{alignItems: 'flex-end'}}>
+            <Checkbox
+              title='Default Unchecked'
+              defaultChecked={false}
+              />
+          </View>
+        } />
+        <Label
+            style={{color: '#9e9e9e', fontSize: 10, marginTop: 6, textAlign: 'left'}}
+            text=' defaultChecked={false} 只设置起始未选中，后续点击依旧会锁定为选中'
+        />
+        <ListRow title='checkedIcon element(Image)' detail={
           <Checkbox
-            title='Icon Style'
-            checkedIcon={require('../icons/smile.png')}
-            checkedIconStyle={{tintColor: '#ff5722', width: 20, height: 20}}
-            uncheckedIcon={require('../icons/smile.png')}
-            uncheckedIconStyle={{tintColor: '#ccc', width: 20, height: 20}}
-            checked={this.state.checkedIconStyle}
-            onChange={value => this.setState({checkedIconStyle: value})}
+            title='Asset Icons'
+            checkedIcon = {<Image source={require('../icons/me_active.png')} />}
+            checkedIconStyle={{tintColor: '#4caf50', width: 22, height: 22}}
+            uncheckedIcon={<Image  source={require('../icons/me.png')} />}
+            uncheckedIconStyle={{tintColor: '#9e9e9e', width: 18, height: 18}}
+            checked={this.state.checkedIconRequire}
+            onChange={value => this.setState({checkedIconRequire: value})}
             />
         } />
-        <ListRow title='hitSlop' detail={
+        <ListRow title='hitSlop(40)' detail={
           <Checkbox
             title='Large Touch Area'
-            hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+            hitSlop={{top: 40, bottom: 40, left: 40, right: 40}}
             checked={this.state.checkedHitSlop}
             onChange={value => this.setState({checkedHitSlop: value})}
+            />
+        } />
+        <ListRow title='hitSlop xl(80)' detail={
+          <Checkbox
+            title='Extra Large Touch Area'
+            hitSlop={{top: 80, bottom: 80, left: 80, right: 80}}
+            checked={this.state.checkedHitSlopXL}
+            onChange={value => this.setState({checkedHitSlopXL: value})}
             />
         } />
         <ListRow title='onChange alert' detail={

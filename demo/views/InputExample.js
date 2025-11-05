@@ -22,7 +22,7 @@ export default class InputExample extends NavigationPage {
       valueMD: null,
       valueLG: null,
       valueReadonly: 'Readonly',
-      valueDisable: 'Disable',
+      valueDisable: 'Disable true',
       valueCustom: null,
       valueCallback: '',
     });
@@ -41,15 +41,18 @@ export default class InputExample extends NavigationPage {
             onChangeText={text => this.setState({valueSM: text})}
             />
         } topSeparator='full' />
+        <View style={{height: 20 }} />
         <ListRow title='Size md' detail={
           <Input
             style={{width: 200}}
             size='md'
             value={this.state.valueMD}
             placeholder='Size md'
+            
             onChangeText={text => this.setState({valueMD: text})}
             />
         }/>
+        <View style={{height: 20}} />
         <ListRow title='Size lg' detail={
           <Input
             style={{width: 200}}
@@ -60,28 +63,50 @@ export default class InputExample extends NavigationPage {
             />
         } bottomSeparator='full' />
         <View style={{height: 20}} />
-        <ListRow title='Readonly' detail={
+        <ListRow title='Readonly(editable={false})' detail={
           <Input
             style={{width: 200}}
             editable={false}
             value={this.state.valueReadonly}
             />
         } topSeparator='full' />
-        <ListRow title='Disabled' detail={
+        <ListRow title='editable(true)' detail={
+          <Input
+            style={{width: 200}}
+            editable={true}
+            placeholder="editable"
+            />
+        } topSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='Disabled(true)' detail={
           <Input
             style={{width: 200}}
             disabled={true}
             value={this.state.valueDisable}
             />
         } bottomSeparator='full' />
-        <View style={{height: 20}} />
-        <ListRow title='underlineColorAndroid' detail={
+        <ListRow title='Disabled(false)' detail={
           <Input
             style={{width: 200}}
-            placeholder='Android underline'
+            disabled={false}
+            placeholder="Disable false"
+            />
+        } bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow title='underlineColorAndroid string' detail={
+          <Input
+            style={{width: 150, paddingVertical:0, borderWidth: 0.01}}
+            placeholder='Visible underline'
             underlineColorAndroid='#ff5722'
             />
-        } topSeparator='full' bottomSeparator='full' />
+        } topSeparator='full' />
+        <ListRow title='underlineColorAndroid rgba' detail={
+          <Input
+            style={{width: 150, paddingVertical:0, borderWidth: 0.01}}
+            placeholder='Visible underline'
+            underlineColorAndroid='rgba(36, 22, 228, 1)'
+            />
+        } bottomSeparator='full' />
         <View style={{height: 20}} />
         <ListRow title='onChangeText callback' detail={
           <Input
@@ -90,7 +115,7 @@ export default class InputExample extends NavigationPage {
             value={this.state.valueCallback}
             onChangeText={text => {
               this.setState({valueCallback: text});
-              if (text.length >= 5) {
+              if (text.length >= 1) {
                 alert(`Input text: ${text}`);
               }
             }}
