@@ -29,6 +29,13 @@ export default class ActionPopoverExample extends NavigationPage {
       showArrow: true,
     };
   }
+  
+  componentWillUnmount() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+  }
 
   show(view) {
     view.measure((x, y, width, height, pageX, pageY) => {
@@ -37,7 +44,7 @@ export default class ActionPopoverExample extends NavigationPage {
         {title: 'Remove', onPress: () => alert('Remove')},
         {title: 'Share', onPress: () => alert('Share')},
       ];
-      ActionPopover.show({x: pageX, y: pageY, width, height}, items);
+      this.overlayKey = ActionPopover.show({x: pageX, y: pageY, width, height}, items);
     });
   }
 
@@ -73,7 +80,7 @@ export default class ActionPopoverExample extends NavigationPage {
           onPress: () => alert('分享')
         }
       ];
-      ActionPopover.show({x: pageX, y: pageY, width, height}, items, {direction: 'down'});
+      this.overlayKey = ActionPopover.show({x: pageX, y: pageY, width, height}, items, {direction: 'down'});
     });
   }
 
@@ -84,7 +91,7 @@ export default class ActionPopoverExample extends NavigationPage {
         {title: 'Show arrow 示例', onPress: () => alert(`showArrow=${showArrow}`)},
         {title: '常规项', onPress: () => alert('常规项')},
       ];
-      ActionPopover.show({x: pageX, y: pageY, width, height}, items, {direction: 'down', showArrow});
+      this.overlayKey = ActionPopover.show({x: pageX, y: pageY, width, height}, items, {direction: 'down', showArrow});
     });
   }
 
@@ -120,9 +127,8 @@ export default class ActionPopoverExample extends NavigationPage {
     if (!view) return;
     view.measure((x, y, width, height, pageX, pageY) => {
       const fromBounds = {x: pageX, y: pageY, width, height};
-      let overlayKey = null;
       const handlePress = message => {
-        overlayKey && Overlay.hide(overlayKey);
+        this.overlayKey && Overlay.hide(this.overlayKey);
         alert(`${alertPrefix}: ${message}`);
       };
       const overlayView = (
@@ -167,7 +173,7 @@ export default class ActionPopoverExample extends NavigationPage {
           </View>
         </Overlay.PopoverView>
       );
-      overlayKey = Overlay.show(overlayView);
+      this.overlayKey = Overlay.show(overlayView);
     });
   }
 

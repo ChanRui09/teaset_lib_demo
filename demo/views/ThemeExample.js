@@ -31,6 +31,10 @@ export default class ThemeExample extends NavigationPage {
 
   componentWillUnmount() {
     this.dimListener && this.dimListener.remove();
+    if (this.pickerKey) {
+      PullPicker.hide(this.pickerKey);
+      this.pickerKey = null;
+    }
   }
 
   handleDimensionChange = () => {
@@ -47,11 +51,12 @@ export default class ThemeExample extends NavigationPage {
   }
 
   changeTheme() {
-    PullPicker.show(
+    this.pickerKey = PullPicker.show(
       'Select theme',
       Object.keys(Theme.themes),
       -1,
       (item, index) => {
+        this.pickerKey = null;
         Theme.set(Theme.themes[item]);
         this.refreshThemeInfo();
         this.navigator.popToTop();
