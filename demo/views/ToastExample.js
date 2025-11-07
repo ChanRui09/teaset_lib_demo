@@ -136,6 +136,35 @@ export default class ToastExample extends NavigationPage {
     ToastExample.toastKey = Toast.message(`默认值 position=${messageDefaultPosition} duration=${messageDefaultDuration}`);
   }
 
+  showTextAsString() {
+    ToastExample.toastKey = Toast.show({
+      text: 'text: string 字符串',
+      position: 'center',
+      duration: 'short',
+    });
+  }
+
+  showTextAsNumber() {
+    ToastExample.toastKey = Toast.show({
+      text: 123456,
+      position: 'center',
+      duration: 'short',
+    });
+  }
+
+  showTextAsElement() {
+    ToastExample.toastKey = Toast.show({
+      text: (
+        <View style={{alignItems: 'center'}}>
+          <Label style={{fontSize: 14, fontWeight: 'bold', color: '#fff'}} text=' React 组件' />
+          <Label style={{fontSize: 12, color: '#fff', marginTop: 4}} text='View组件' />
+        </View>
+      ),
+      position: 'center',
+      duration: 'short',
+    });
+  }
+
   renderPage() {
     let {testPosition, testDuration, defaultPosition, defaultDuration, messageDefaultPosition, messageDefaultDuration} = this.state;
     return (
@@ -310,6 +339,24 @@ export default class ToastExample extends NavigationPage {
         <View style={{height: 20}} />
         <ListRow title='Show custom' onPress={() => this.showCustom()} topSeparator='full' />
         <ListRow title='Hide custom' onPress={() => this.hideCustom()} bottomSeparator='full' />
+        <View style={{height: 20}} />
+        <ListRow
+          title='→ text string'
+          detail='string'
+          topSeparator='full'
+          onPress={() => this.showTextAsString()}
+        />
+        <ListRow
+          title='→ text: number'
+          detail='123456'
+          onPress={() => this.showTextAsNumber()}
+        />
+        <ListRow
+          title='→ text: React 组件'
+          detail='自定义 Label 组合'
+          onPress={() => this.showTextAsElement()}
+          bottomSeparator='full'
+        />
         <View style={{height: Theme.screenInset.bottom}} />
       </ScrollView>
     );

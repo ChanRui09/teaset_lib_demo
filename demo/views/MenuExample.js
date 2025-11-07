@@ -33,6 +33,7 @@ export default class MenuExample extends NavigationPage {
     this.noShadowRef = React.createRef();
     this.arrowTrueRef = React.createRef();
     this.arrowFalseRef = React.createRef();
+    this.menuItemComponentRef = React.createRef();
   }
     
   componentWillUnmount() {
@@ -100,6 +101,11 @@ export default class MenuExample extends NavigationPage {
         icon: require('../icons/trash.png'),
         onPress: () => alert('自定义样式')
       },
+      {
+        title: 2025,
+        icon: require('../icons/home_active.png'),
+        onPress: () => alert('数字标题 2025'),
+      },
       {title: '普通标题', icon: require('../icons/edit.png'), onPress: () => alert('普通')},
     ];
     this.measureAndShow(view, items);
@@ -119,6 +125,55 @@ export default class MenuExample extends NavigationPage {
 
   showWithArrow(view, showArrow) {
     this.measureAndShow(view, this.getDefaultItems(), {showArrow});
+  }
+
+  showUsingMenuItemsComponent(view) {
+    if (!view || !view.measure) {
+      return;
+    }
+    view.measure((x, y, width, height, pageX, pageY) => {
+      const fromBounds = {x: pageX, y: pageY, width, height};
+      const closeAndAlert = message => {
+        if (this.overlayKey) {
+          Overlay.hide(this.overlayKey);
+          this.overlayKey = null;
+        }
+        setTimeout(() => alert(message), 10);
+      };
+      const containerStyle = {
+        backgroundColor: Theme.menuColor,
+        borderRadius: 6,
+        overflow: 'hidden',
+      };
+      const overlayContent = (
+        <Overlay.PopoverView
+          fromBounds={fromBounds}
+          direction='down'
+          align='center'
+          showArrow
+          shadow
+        >
+          <View style={containerStyle}>
+            <Menu.MenuView.Item
+              title='Search'
+              icon={require('../icons/search.png')}
+              onPress={() => closeAndAlert('Search (Menu.MenuView.Item)')}
+            />
+            <Menu.MenuView.Item
+              title='Edit'
+              icon={require('../icons/edit.png')}
+              onPress={() => closeAndAlert('Edit (Menu.MenuView.Item)')}
+            />
+            <Menu.MenuView.Item
+              title='Remove'
+              icon={require('../icons/trash.png')}
+              onPress={() => closeAndAlert('Remove (Menu.MenuView.Item)')}
+            />
+          </View>
+        </Overlay.PopoverView>
+      );
+      this.overlayKey = Overlay.show(overlayContent);
+    });
   }
 
   renderPage() {
@@ -223,6 +278,21 @@ export default class MenuExample extends NavigationPage {
             title='隐藏箭头' 
             ref={this.arrowFalseRef}
             onPress={() => this.showWithArrow(this.arrowFalseRef.current, false)}
+          />
+        </View>
+
+        <View style={{height: 20}} />
+        <Label type='detail' size='md' text='直接使用 Menu.MenuView.Item' style={{ fontWeight: 'bold', color: '#000' }}/>
+        <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          下例通过 Overlay.PopoverView 手动渲染 Menu.MenuView.Item 组件，展示如何直接使用官方菜单项类
+        </Text>
+        <View style={{alignItems: 'center', marginTop: 10}}>
+          <Button
+            title='使用 Menu.MenuView.Item'
+            type='primary'
+            ref={this.menuItemComponentRef}
+            onPress={() => this.showUsingMenuItemsComponent(this.menuItemComponentRef.current)}
           />
         </View>
         

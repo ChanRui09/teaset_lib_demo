@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Text} from 'react-native';
 
-import {NavigationPage, ListRow, PopoverPicker, Label, Overlay, Button} from 'teaset';
+import {NavigationPage, ListRow, PopoverPicker, Label, Overlay, Button, Theme} from 'teaset';
 
 export default class PopoverPickerExample extends NavigationPage {
 
@@ -52,6 +52,7 @@ export default class PopoverPickerExample extends NavigationPage {
     this.directionRightRef = React.createRef();
     this.arrowTrueRef = React.createRef();
     this.arrowFalseRef = React.createRef();
+  this.directItemButtonRef = React.createRef();
     
     Object.assign(this.state, {
       selectedIndex: null,
@@ -59,6 +60,7 @@ export default class PopoverPickerExample extends NavigationPage {
       fruitSelectedIndex: null,
       shadowSelectedIndex: null,
       noShadowSelectedIndex: null,
+      customItemSelectedIndex: null,
     });
   }
   
@@ -178,13 +180,66 @@ export default class PopoverPickerExample extends NavigationPage {
     );
   }
 
+  showUsingPopoverPickerItems(view) {
+    if (!view || !view.measure) {
+      return;
+    }
+    view.measure((x, y, width, height, pageX, pageY) => {
+      const fromBounds = {x: pageX, y: pageY, width, height};
+      const hideOverlay = () => {
+        if (this.overlayKey) {
+          Overlay.hide(this.overlayKey);
+          this.overlayKey = null;
+        }
+      };
+      const handleSelect = (item, index) => {
+        hideOverlay();
+        this.setState({customItemSelectedIndex: index});
+        setTimeout(() => {
+          alert(`自定义 PopoverPicker.PopoverPickerView.Item\n\n选项: ${item}`);
+        }, 10);
+      };
+      const containerStyle = {
+        backgroundColor: Theme.poppColor,
+        borderRadius: 6,
+        overflow: 'hidden',
+        minWidth: Theme.poppMinWidth,
+        maxWidth: Theme.poppMaxWidth,
+      };
+      const content = (
+        <Overlay.PopoverView
+          fromBounds={fromBounds}
+          direction='down'
+          align='center'
+          showArrow
+          shadow
+        >
+          <View style={containerStyle}>
+            <ScrollView>
+              {this.items.map((item, index) => (
+                <PopoverPicker.PopoverPickerView.Item
+                  key={`${item}-${index}`}
+                  title={item}
+                  selected={this.state.customItemSelectedIndex === index}
+                  onPress={() => handleSelect(item, index)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        </Overlay.PopoverView>
+      );
+      this.overlayKey = Overlay.show(content);
+    });
+  }
+
   renderPage() {
-    let {selectedIndex, modalSelectedIndex, fruitSelectedIndex, shadowSelectedIndex, noShadowSelectedIndex} = this.state;
+    let {selectedIndex, modalSelectedIndex, fruitSelectedIndex, shadowSelectedIndex, noShadowSelectedIndex, customItemSelectedIndex} = this.state;
     let selected = (selectedIndex || selectedIndex === 0) ? this.items[selectedIndex] : null;
     let modalSelected = (modalSelectedIndex || modalSelectedIndex === 0) ? this.items[modalSelectedIndex] : null;
     let fruitSelected = (fruitSelectedIndex || fruitSelectedIndex === 0) ? this.fruitItems[fruitSelectedIndex] : null;
     let shadowSelected = (shadowSelectedIndex || shadowSelectedIndex === 0) ? this.items[shadowSelectedIndex] : null;
     let noShadowSelected = (noShadowSelectedIndex || noShadowSelectedIndex === 0) ? this.items[noShadowSelectedIndex] : null;
+    let customItemSelected = (customItemSelectedIndex || customItemSelectedIndex === 0) ? this.items[customItemSelectedIndex] : null;
     
     return (
       <ScrollView style={{flex: 1}}>
@@ -277,6 +332,21 @@ export default class PopoverPickerExample extends NavigationPage {
         <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
           selected 属性说明 - 通过 selectedIndex 自动高亮已选项，右侧会显示 ✓ 标记
         </Text>
+
+        <View style={{height: 20}} />
+        <Label type='detail' size='md' text='直接使用 PopoverPicker.PopoverPickerView.Item' style={{fontWeight: 'bold', color: '#000'}} />
+        <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          下例通过 Overlay.PopoverView 手动渲染 PopoverPicker.PopoverPickerView.Item，可灵活组合自定义数据源及选中反馈
+        </Text>
+        <View style={{alignItems: 'center', marginTop: 12}}>
+          <Button
+            title={customItemSelected ? `自定义选择：${customItemSelected}` : '使用 PopoverPicker.Item'}
+            type='primary'
+            ref={this.directItemButtonRef}
+            onPress={() => this.showUsingPopoverPickerItems(this.directItemButtonRef.current)}
+          />
+        </View>
         
         <View style={{height: 20}} />
       </ScrollView>

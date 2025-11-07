@@ -19,11 +19,13 @@ export default class ActionPopoverExample extends NavigationPage {
     super(props);
     this.apButtonRef = React.createRef();
     this.customTitleRef = React.createRef();
+  this.titleEnumRef = React.createRef();
     this.arrowDemoRef = React.createRef();
     this.separatorNoneRef = React.createRef();
     this.separatorLeftRef = React.createRef();
     this.separatorRightRef = React.createRef();
     this.separatorBothRef = React.createRef();
+    this.directItemRef = React.createRef();
     this.alignStartRef = React.createRef();
     this.alignCenterRef = React.createRef();
     this.alignEndRef = React.createRef();
@@ -34,6 +36,7 @@ export default class ActionPopoverExample extends NavigationPage {
 
     this.state = {
       showArrow: true,
+      directItemSelected: null,
     };
   }
   
@@ -71,42 +74,27 @@ export default class ActionPopoverExample extends NavigationPage {
     });
   }
 
-  showCustomTitle(view) {
+
+  showTitleVariants(view) {
     this.measureView(view, fromBounds => {
       const items = [
+        { title: '字符串 title', onPress: () => alert('title: string') },
+        { title: 2025, onPress: () => alert('title: number 2025') },
         {
           title: (
-            <View style={{alignItems: 'center'}}>
-              <Text style={{fontSize: 20}}>📋</Text>
-              <Text style={{fontSize: 12, color: Theme.apItemTitleColor}}>复制</Text>
+            <View style={{ alignItems: 'center' }}>
+              <Label style={{ fontSize: 16, color: Theme.apItemTitleColor, fontWeight: 'bold' }} text='React 组件标题' />
+              <Label style={{ fontSize: 12, color: '#999', marginTop: 4 }} text='(element)' />
             </View>
           ),
-          onPress: () => alert('复制'),
-        },
-        {
-          title: (
-            <View style={{alignItems: 'center'}}>
-              <Text style={{fontSize: 20}}>🗑️</Text>
-              <Text style={{fontSize: 12, color: Theme.apItemTitleColor}}>删除</Text>
-            </View>
-          ),
-          onPress: () => alert('删除'),
-        },
-        {
-          title: (
-            <View style={{alignItems: 'center'}}>
-              <Text style={{fontSize: 20}}>📤</Text>
-              <Text style={{fontSize: 12, color: Theme.apItemTitleColor}}>分享</Text>
-            </View>
-          ),
-          onPress: () => alert('分享'),
+          onPress: () => alert('title: element'),
         },
       ];
       if (this.overlayKey) {
         Overlay.hide(this.overlayKey);
         this.overlayKey = null;
       }
-      this.overlayKey = ActionPopover.show(fromBounds, items, {direction: 'down'});
+      this.overlayKey = ActionPopover.show(fromBounds, items, { direction: 'down' });
     });
   }
 
@@ -232,6 +220,63 @@ export default class ActionPopoverExample extends NavigationPage {
     });
   }
 
+  showUsingActionPopoverItems(view) {
+    if (!view || !view.measure) {
+      return;
+    }
+    this.measureView(view, fromBounds => {
+      const items = [
+        {title: '复制 (Item 组件)'},
+        {title: '转发 (Item 组件)'},
+        {title: '删除 (Item 组件)'}
+      ];
+      const hideOverlay = () => {
+        if (this.overlayKey) {
+          Overlay.hide(this.overlayKey);
+          this.overlayKey = null;
+        }
+      };
+      const content = (
+        <Overlay.PopoverView
+          fromBounds={fromBounds}
+          direction='up'
+          align='center'
+          showArrow
+          shadow
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              backgroundColor: Theme.apColor,
+              borderRadius: Theme.apBorderRadius,
+              overflow: 'hidden',
+              minWidth: 220,
+            }}
+          >
+            {items.map((item, index) => (
+              <ActionPopover.ActionPopoverView.Item
+                key={`direct-item-${index}`}
+                title={item.title}
+                leftSeparator={index !== 0}
+                style={{alignItems: 'center', justifyContent: 'center', minWidth: 70}}
+                onPress={() => {
+                  hideOverlay();
+                  this.setState({directItemSelected: item.title});
+                  setTimeout(() => alert(`ActionPopoverView.Item 触发：${item.title}`), 10);
+                }}
+              />
+            ))}
+          </View>
+        </Overlay.PopoverView>
+      );
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+      this.overlayKey = Overlay.show(content);
+    });
+  }
+
   renderPage() {
     return (
       <ScrollView style={{flex: 1}}>
@@ -297,11 +342,12 @@ export default class ActionPopoverExample extends NavigationPage {
           title 属性演示 - 支持字符串、数字或自定义 React 组件
         </Text>
         <View style={{alignItems: 'center'}}>
-          <Button 
-            title='自定义 Title 组件' 
-            ref={this.customTitleRef} 
-            onPress={() => this.showCustomTitle(this.customTitleRef.current)}
-            type='primary'
+          <View style={{height: 12}} />
+          <Button
+            title='title 类型枚举 (string / number / element)'
+            ref={this.titleEnumRef}
+            onPress={() => this.showTitleVariants(this.titleEnumRef.current)}
+            type='secondary'
           />
         </View>
         
@@ -347,6 +393,21 @@ export default class ActionPopoverExample extends NavigationPage {
           </View>
         </View>
         
+        <View style={{height: 20}} />
+        <Label type='detail' size='md' text='直接使用 ActionPopover.ActionPopoverView.Item' style={{fontWeight: 'bold', color: '#000'}} />
+        <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          通过 Overlay.PopoverView 手动组合 ActionPopover.ActionPopoverView.Item，可灵活扩展个性化操作面板
+        </Text>
+        <View style={{alignItems: 'center', marginTop: 12}}>
+          <Button
+            title={this.state.directItemSelected ? `最近选择：${this.state.directItemSelected}` : '使用 ActionPopover.Item'}
+            type='secondary'
+            ref={this.directItemRef}
+            onPress={() => this.showUsingActionPopoverItems(this.directItemRef.current)}
+          />
+        </View>
+
         <View style={{height: 20}} />
       </ScrollView>
     );

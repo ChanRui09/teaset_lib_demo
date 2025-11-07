@@ -17,7 +17,12 @@ export default class CarouselExample extends NavigationPage {
 
   constructor(props) {
     super(props);
-    this.carouselRef = null;
+  this.carouselRef = null;
+  this.pendingCarouselIndex = null;
+    this.suppressCarouselChange = false;
+    this.expectedCarouselIndex = null;
+  this.pendingReinitDone = null;
+  this.suppressReleaseTimer = null;
     this.controlItems = ['none', 'default', 'custom'];
     this.directionItems = ['forward', 'backward'];
     this.intervalItems = [1000, 2000, 3000, 5000, 8000];
@@ -31,6 +36,7 @@ export default class CarouselExample extends NavigationPage {
       carousel: true,
       interval: 3000,
       startIndex: 0,
+      renderStartIndex: 0,
       cycle: true,
       horizontal: true,
       pagingEnabled: true,
@@ -43,15 +49,20 @@ export default class CarouselExample extends NavigationPage {
       currentIndex: 0,
       totalPages: 3,
       scrollEventCounter: 0,
-  scrollEventRate: 0,
-  automaticallyAdjustContentInsets: false,
+      scrollEventRate: 0,
+      automaticallyAdjustContentInsets: false,
       contentInsetTop: 0,
+      carouselVersion: 0,
     });
   }
   
   componentWillUnmount() {
     if (this.pickerKey) {
       PullPicker.hide(this.pickerKey);
+    }
+    if (this.suppressReleaseTimer) {
+      clearTimeout(this.suppressReleaseTimer);
+      this.suppressReleaseTimer = null;
     }
   }
 
@@ -122,7 +133,7 @@ export default class CarouselExample extends NavigationPage {
       options.indexOf(this.state.startIndex),
       (item, index) => {
         this.pickerKey = null;
-        this.setState({startIndex: item, currentIndex: item}, () => {
+        this.setState({startIndex: item, renderStartIndex: item, currentIndex: item}, () => {
           this.carouselRef?.scrollToPage(item, true);
         });
         console.log('[Carousel] startIndex changed to:', item);
@@ -164,7 +175,21 @@ export default class CarouselExample extends NavigationPage {
   }
 
   handleCarouselChange(index, total) {
-    this.setState({currentIndex: index, totalPages: total});
+    if (this.expectedCarouselIndex !== null) {
+      if (index !== this.expectedCarouselIndex) {
+        this.suppressCarouselChange = true;
+        if (this.carouselRef) {
+          this.carouselRef.scrollToPage(this.expectedCarouselIndex, false);
+        }
+        this.scheduleSuppressionRelease();
+        return;
+      }
+      this.expectedCarouselIndex = null;
+    }
+    if (this.suppressCarouselChange) {
+      this.suppressCarouselChange = false;
+    }
+    this.setState({currentIndex: index, totalPages: total, renderStartIndex: index});
     console.log(`[Carousel] onChange callback - Current page: ${index + 1}/${total}`);
     Toast.message(`Page ${index + 1} of ${total}`, {position: 'top', duration: 1000});
   }
@@ -197,6 +222,61 @@ export default class CarouselExample extends NavigationPage {
     Toast.message('Scrolling to next page', {position: 'top', duration: 1000});
   }
 
+  scheduleSuppressionRelease() {
+    if (this.suppressReleaseTimer) {
+      clearTimeout(this.suppressReleaseTimer);
+    }
+    this.suppressReleaseTimer = setTimeout(() => {
+      this.suppressReleaseTimer = null;
+      if (this.suppressCarouselChange) {
+        this.suppressCarouselChange = false;
+        this.expectedCarouselIndex = null;
+      }
+    }, 160);
+  }
+
+  reinitializeCarousel(updates = {}, options = {}) {
+    const {targetIndex, done, forceRemount = false} = options;
+    const nextIndex = typeof targetIndex === 'number' ? targetIndex : this.state.currentIndex;
+    this.suppressCarouselChange = true;
+    this.expectedCarouselIndex = nextIndex;
+    this.setState(prev => {
+      const stateUpdates = {
+        ...updates,
+        renderStartIndex: nextIndex,
+        currentIndex: nextIndex,
+      };
+      if (forceRemount) {
+        this.pendingCarouselIndex = nextIndex;
+        this.pendingReinitDone = done;
+        stateUpdates.carouselVersion = (prev.carouselVersion || 0) + 1;
+      }
+      return stateUpdates;
+    }, () => {
+      if (forceRemount) {
+        this.scheduleSuppressionRelease();
+        return;
+      }
+      setTimeout(() => {
+        if (this.carouselRef) {
+          this.carouselRef.scrollToPage(nextIndex, false);
+        }
+        done && done();
+        this.scheduleSuppressionRelease();
+      }, 16);
+    });
+  }
+
+  handleCycleToggle(value) {
+    this.reinitializeCarousel({cycle: value}, {
+      targetIndex: this.state.currentIndex,
+      forceRemount: false,
+      done: () => {
+        console.log('[Carousel] cycle prop:', value);
+      },
+    });
+  }
+
   renderControl() {
     let {control} = this.state;
     if (control === 'default') {
@@ -214,11 +294,31 @@ export default class CarouselExample extends NavigationPage {
   }
 
   renderPage() {
-    let {width, carousel, interval, direction, cycle, horizontal, pagingEnabled, 
-      showsHorizontalScrollIndicator, showsVerticalScrollIndicator, 
-      alwaysBounceHorizontal, alwaysBounceVertical, bounces, scrollEventThrottle,
-  automaticallyAdjustContentInsets, startIndex,
-  control, currentIndex, totalPages, scrollEventCounter, scrollEventRate, contentInsetTop} = this.state;
+    let {
+      width,
+      carousel,
+      interval,
+      direction,
+      cycle,
+      horizontal,
+      pagingEnabled,
+      showsHorizontalScrollIndicator,
+      showsVerticalScrollIndicator,
+      alwaysBounceHorizontal,
+      alwaysBounceVertical,
+      bounces,
+      scrollEventThrottle,
+      automaticallyAdjustContentInsets,
+      startIndex,
+      renderStartIndex,
+      control,
+      currentIndex,
+      totalPages,
+      scrollEventCounter,
+      scrollEventRate,
+      contentInsetTop,
+      carouselVersion,
+    } = this.state;
     
     // 动态计算高度：横向时固定高度，纵向时根据内容调整
     const carouselHeight = horizontal ? 238 : 238;
@@ -237,11 +337,22 @@ export default class CarouselExample extends NavigationPage {
 
         <View style={{height: carouselHeight, backgroundColor: '#00000008'}}>
           <Carousel
-            ref={ref => this.carouselRef = ref}
+            key={`carousel-${carouselVersion}`}
+            ref={ref => {
+              this.carouselRef = ref;
+              if (ref && this.pendingCarouselIndex !== null) {
+                ref.scrollToPage(this.pendingCarouselIndex, false);
+                this.pendingCarouselIndex = null;
+                if (this.pendingReinitDone) {
+                  this.pendingReinitDone();
+                  this.pendingReinitDone = null;
+                }
+              }
+            }}
             style={{flex: 1}}
             carousel={carousel}
             interval={interval}
-            startIndex={startIndex}
+            startIndex={renderStartIndex}
             direction={direction}
             cycle={cycle}
             control={this.renderControl()}
@@ -316,10 +427,7 @@ export default class CarouselExample extends NavigationPage {
 
           <ListRow
             title='Cycle (loop)'
-            detail={<Switch value={cycle} onValueChange={value => {
-              this.setState({cycle: value});
-              console.log('[Carousel] cycle prop:', value);
-            }} />}
+            detail={<Switch value={cycle} onValueChange={value => this.handleCycleToggle(value)} />}
           />
 
           {/* ScrollView 继承属性 */}
@@ -327,8 +435,10 @@ export default class CarouselExample extends NavigationPage {
           <ListRow
             title='horizontal'
             detail={<Switch value={horizontal} onValueChange={value => {
-              this.setState({horizontal: value});
-              console.log('[Carousel] horizontal prop:', value);
+              this.reinitializeCarousel({horizontal: value}, {
+                targetIndex: this.state.currentIndex,
+                done: () => console.log('[Carousel] horizontal prop:', value),
+              });
             }} />}
             topSeparator='full'
           />

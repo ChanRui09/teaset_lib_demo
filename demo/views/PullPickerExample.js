@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Text } from 'react-native';
 
-import { NavigationPage, ListRow, PullPicker, Label, Overlay } from 'teaset';
+import { NavigationPage, ListRow, PullPicker, Label, Overlay, Theme } from 'teaset';
 
 export default class PullPickerExample extends NavigationPage {
 
@@ -43,6 +43,7 @@ export default class PullPickerExample extends NavigationPage {
       selectedIndex: null,
       modalSelectedIndex: null,
       citySelectedIndex: null,
+      customSelectedIndex: null,
     });
 
   }
@@ -97,11 +98,62 @@ export default class PullPickerExample extends NavigationPage {
     );
   }
 
+  showUsingPullPickerItems() {
+    if (this.overlayKey) {
+      Overlay.hide(this.overlayKey);
+      this.overlayKey = null;
+    }
+    const hideOverlay = () => {
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+    };
+    const handleSelect = (item, index) => {
+      hideOverlay();
+      this.setState({ customSelectedIndex: index });
+      setTimeout(() => {
+        alert(`PullPickerView.Item 选中：${item}`);
+      }, 10);
+    };
+    const content = (
+      <Overlay.PullView side='bottom' modal={false}>
+        <View style={{ backgroundColor: Theme.pupColor, maxHeight: Theme.pupMaxHeight }}>
+          <View style={{
+            backgroundColor: Theme.pupHeaderColor,
+            paddingLeft: Theme.pupHeaderPaddingLeft,
+            paddingRight: Theme.pupHeaderPaddingRight,
+            paddingTop: Theme.pupHeaderPaddingTop,
+            paddingBottom: Theme.pupHeaderPaddingBottom,
+          }}>
+            <Label style={{ color: Theme.pupHeaderTitleColor, fontSize: Theme.pupHeaderFontSize, fontWeight: Theme.pupHeaderFontWeight }} text='自定义 PullPicker.Menu' />
+          </View>
+          <View style={{ backgroundColor: Theme.pupHeaderSeparatorColor, height: Theme.pupHeaderSeparatorHeight }} />
+          <ScrollView style={{ backgroundColor: Theme.pupColor }}>
+            {this.items.map((item, index) => (
+              <PullPicker.PullPickerView.Item
+                key={`direct-${item}-${index}`}
+                style={{ backgroundColor: Theme.pupItemColor }}
+                title={item}
+                selected={this.state.customSelectedIndex === index}
+                bottomSeparator={<View style={{ backgroundColor: Theme.pupSeparatorColor, height: Theme.rowSeparatorLineWidth }} />}
+                onPress={() => handleSelect(item, index)}
+              />
+            ))}
+            <View style={{ height: Theme.screenInset.bottom }} />
+          </ScrollView>
+        </View>
+      </Overlay.PullView>
+    );
+    this.overlayKey = Overlay.show(content);
+  }
+
   renderPage() {
-    let { selectedIndex, modalSelectedIndex, citySelectedIndex } = this.state;
+  let { selectedIndex, modalSelectedIndex, citySelectedIndex, customSelectedIndex } = this.state;
     let selected = (selectedIndex || selectedIndex === 0) ? this.items[selectedIndex] : null;
     let modalSelected = (modalSelectedIndex || modalSelectedIndex === 0) ? this.items[modalSelectedIndex] : null;
     let citySelected = (citySelectedIndex || citySelectedIndex === 0) ? this.objectItems[citySelectedIndex] : null;
+  let customSelected = (customSelectedIndex || customSelectedIndex === 0) ? this.items[customSelectedIndex] : null;
 
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -136,6 +188,20 @@ export default class PullPickerExample extends NavigationPage {
         <Text style={{ marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18 }}>
           selected 属性说明 - 通过 selectedIndex 自动标记当前选项，右侧会显示 ✓
         </Text>
+
+        <View style={{ height: 20 }} />
+        <Label type='detail' size='md' text='直接使用 PullPicker.PullPickerView.Item' style={{ fontWeight: 'bold', color: '#000' }} />
+        <View style={{ height: 10 }} />
+        <Text style={{ marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18 }}>
+          通过 Overlay.PullView 手动渲染 PullPicker.PullPickerView.Item，可自定义布局与交互逻辑
+        </Text>
+        <ListRow
+          title='使用 PullPicker.Item'
+          detail={customSelected ? `最近选择：${customSelected}` : null}
+          onPress={() => this.showUsingPullPickerItems()}
+          topSeparator='full'
+          bottomSeparator='full'
+        />
 
         <View style={{ height: 20 }} />
       </ScrollView>

@@ -28,6 +28,10 @@ export default class ActionSheetExample extends NavigationPage {
       Overlay.hide(this.typeKey);
       this.typeKey = null;
     }
+    if (this.titleKey) {
+      Overlay.hide(this.titleKey);
+      this.titleKey = null;
+    }
   }
 
   show(modal) {
@@ -189,6 +193,53 @@ export default class ActionSheetExample extends NavigationPage {
     this.typeKey = Overlay.show(overlayView);
   }
 
+  showTitleVariants() {
+    let overlayView = (
+      <Overlay.PullView side='bottom' modal={false}>
+        <ActionSheet.ActionSheetView.Item
+          type='default'
+          title='字符串标题 (string)'
+          topSeparator='none'
+          onPress={() => {
+            alert('title: string');
+            Overlay.hide(this.titleKey);
+          }}
+        />
+        <ActionSheet.ActionSheetView.Item
+          type='default'
+          title={2025}
+          topSeparator='full'
+          onPress={() => {
+            alert('title: number 2025');
+            Overlay.hide(this.titleKey);
+          }}
+        />
+        <ActionSheet.ActionSheetView.Item
+          type='default'
+          title={
+            <View style={{ alignItems: 'center' }}>
+              <Label style={{ fontSize: 16, fontWeight: 'bold', color: '#4caf50' }} text='React 组件标题' />
+              <Label style={{ fontSize: 12, color: '#666', marginTop: 4 }} text='(element)' />
+            </View>
+          }
+          topSeparator='full'
+          onPress={() => {
+            alert('title: element');
+            Overlay.hide(this.titleKey);
+          }}
+        />
+        <ActionSheet.ActionSheetView.Item
+          type='cancel'
+          title='关闭'
+          topSeparator='full'
+          onPress={() => Overlay.hide(this.titleKey)}
+        />
+        <View style={{ backgroundColor: Theme.asCancelItemColor, height: Theme.screenInset.bottom }} />
+      </Overlay.PullView>
+    );
+    this.titleKey = Overlay.show(overlayView);
+  }
+
   renderPage() {
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -207,7 +258,8 @@ export default class ActionSheetExample extends NavigationPage {
           <Label style={{ fontSize: 12, color: '#666', lineHeight: 18 }} text='• full: 满行分隔线' />
         </View>
         <View style={{ height: 20 }} />
-        <ListRow title='title 自定义组件' onPress={() => this.showCustomTitle()} topSeparator='full' bottomSeparator='full' />
+  <ListRow title='title 自定义组件' onPress={() => this.showCustomTitle()} topSeparator='full' />
+  <ListRow title='title 类型枚举 (string / number / element)' onPress={() => this.showTitleVariants()} bottomSeparator='full' />
         <View style={{ height: 10 }} />
         <View style={{ padding: 10, backgroundColor: '#fff3e0', marginHorizontal: 10, borderRadius: 5 }}>
           <Label style={{ fontSize: 12, color: '#e65100', lineHeight: 18 }} text='说明：' />
