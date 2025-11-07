@@ -2,12 +2,11 @@
 
 'use strict';
 
-import React, {Component} from 'react';
-import {View, ScrollView, Text, Switch} from 'react-native';
+import React from 'react';
+import {View, ScrollView, Text} from 'react-native';
 
-import {NavigationPage, BasePage, ListRow, Label, Button, NavigationBar} from 'teaset';
+import {NavigationPage, ListRow, Button, NavigationBar, TeaNavigator, Theme} from 'teaset';
 
-// 1. 基础用法 - 简单的导航页面
 class BasicNavigationPage extends NavigationPage {
   static defaultProps = {
     ...NavigationPage.defaultProps,
@@ -18,28 +17,35 @@ class BasicNavigationPage extends NavigationPage {
   renderPage() {
     return (
       <View style={{flex: 1, padding: 20}}>
-        <View style={{backgroundColor: '#e3f2fd', padding: 15, borderRadius: 8}}>
-          <Text style={{fontSize: 16, color: '#1565c0', fontWeight: 'bold'}}>
-            NavigationPage 基础用法
-          </Text>
-          <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-            • title: "基础导航页面"{'\n'}
-            • showBackButton: true{'\n'}
-            • navigationBarInsets: true (默认)
+        <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+          <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+            默认配置展示返回按钮。
           </Text>
         </View>
+      </View>
+    );
+  }
+}
 
-        <View style={{backgroundColor: '#fff', padding: 15, borderRadius: 8, marginTop: 15}}>
-          <Text style={{fontSize: 14, color: '#333', lineHeight: 20}}>
-            NavigationPage 继承自 BasePage，{'\n'}
-            在 BasePage 基础上添加了 NavigationBar 导航条。{'\n\n'}
-            默认转场效果为 PushFromRight（从右侧推入）
+class NoBackButtonPage extends NavigationPage {
+  static defaultProps = {
+    ...NavigationPage.defaultProps,
+    title: '隐藏默认返回按钮',
+    showBackButton: false,
+  };
+
+  renderPage() {
+    return (
+      <View style={{flex: 1, padding: 20}}>
+        <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+          <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+            showBackButton 设置为 false 时，导航条不会渲染默认返回按钮。
           </Text>
         </View>
 
         <Button
           type='primary'
-          title='返回'
+          title='自定义的返回'
           style={{marginTop: 20}}
           onPress={() => this.navigator.pop()}
         />
@@ -48,7 +54,6 @@ class BasicNavigationPage extends NavigationPage {
   }
 }
 
-// 2. 自定义导航条标题
 class CustomTitlePage extends NavigationPage {
   static defaultProps = {
     ...NavigationPage.defaultProps,
@@ -60,7 +65,7 @@ class CustomTitlePage extends NavigationPage {
     return (
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Text style={{fontSize: 18, fontWeight: 'bold', color: '#e91e63'}}>
-          🎨 自定义标题
+          自定义标题
         </Text>
       </View>
     );
@@ -69,15 +74,9 @@ class CustomTitlePage extends NavigationPage {
   renderPage() {
     return (
       <View style={{flex: 1, padding: 20}}>
-        <View style={{backgroundColor: '#fce4ec', padding: 15, borderRadius: 8}}>
-          <Text style={{fontSize: 16, color: '#c2185b', fontWeight: 'bold'}}>
-            renderNavigationTitle() 方法
-          </Text>
-          <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-            重写此方法可以自定义导航条标题显示内容{'\n\n'}
-            • 可以返回自定义的 JSX 元素{'\n'}
-            • 可以添加图标、样式等{'\n'}
-            • 默认返回 this.props.title
+        <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+          <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+            覆写 renderNavigationTitle。
           </Text>
         </View>
 
@@ -92,7 +91,6 @@ class CustomTitlePage extends NavigationPage {
   }
 }
 
-// 3. 自定义左侧按钮
 class CustomLeftViewPage extends NavigationPage {
   static defaultProps = {
     ...NavigationPage.defaultProps,
@@ -115,15 +113,9 @@ class CustomLeftViewPage extends NavigationPage {
   renderPage() {
     return (
       <View style={{flex: 1, padding: 20}}>
-        <View style={{backgroundColor: '#fff3e0', padding: 15, borderRadius: 8}}>
-          <Text style={{fontSize: 16, color: '#e65100', fontWeight: 'bold'}}>
-            renderNavigationLeftView() 方法
-          </Text>
-          <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-            重写此方法可以自定义导航条左侧按钮{'\n\n'}
-            • showBackButton: false{'\n'}
-            • 自定义返回 "关闭" 按钮{'\n'}
-            • 可以自定义点击事件和样式
+        <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+          <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+            覆写 renderNavigationLeftView。
           </Text>
         </View>
 
@@ -138,7 +130,6 @@ class CustomLeftViewPage extends NavigationPage {
   }
 }
 
-// 4. 自定义右侧按钮
 class CustomRightViewPage extends NavigationPage {
   static defaultProps = {
     ...NavigationPage.defaultProps,
@@ -171,24 +162,15 @@ class CustomRightViewPage extends NavigationPage {
   renderPage() {
     return (
       <View style={{flex: 1, padding: 20}}>
-        <View style={{backgroundColor: '#e8f5e9', padding: 15, borderRadius: 8}}>
-          <Text style={{fontSize: 16, color: '#2e7d32', fontWeight: 'bold'}}>
-            renderNavigationRightView() 方法
-          </Text>
-          <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-            重写此方法可以自定义导航条右侧按钮{'\n\n'}
-            • 可以添加多个按钮{'\n'}
-            • 可以自定义图标、文字、样式{'\n'}
-            • 默认返回 null
+        <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+          <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+            覆写 renderNavigationRightView 挂载多个操作按钮。
           </Text>
         </View>
 
-        <View style={{backgroundColor: '#fff', padding: 20, borderRadius: 8, marginTop: 15, alignItems: 'center'}}>
+        <View style={{marginTop: 15, alignItems: 'center'}}>
           <Text style={{fontSize: 18, color: '#333'}}>
-            点击计数: {this.state.count}
-          </Text>
-          <Text style={{fontSize: 12, color: '#999', marginTop: 5}}>
-            点击右上角 "添加" 按钮增加计数
+            点击次数: {this.state.count}
           </Text>
         </View>
 
@@ -203,15 +185,78 @@ class CustomRightViewPage extends NavigationPage {
   }
 }
 
-// 5. navigationBarInsets 属性演示 - true
-class NavigationBarInsetsTruePage extends NavigationPage {
+class CustomNavigationBarPage extends NavigationPage {
   static defaultProps = {
     ...NavigationPage.defaultProps,
-    title: 'Insets = true',
-    showBackButton: true,
-    navigationBarInsets: true,
+    title: 'renderNavigationBar 示例',
+    showBackButton: false,
   };
 
+  renderNavigationBar() {
+    const containerStyle = {
+      position: 'absolute',
+      top: 100,
+      left: 0,
+      right: 0,
+      backgroundColor: '#3949ab',
+      paddingTop: Theme.statusBarHeight,
+      borderBottomWidth: 1,
+      borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+      zIndex: 1,
+    };
+    const contentStyle = {
+      height: Theme.navBarContentHeight,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 10,
+    };
+    const linkProps = {
+      type: 'link',
+      titleStyle: {color: '#fff', fontSize: 16},
+    };
+    return (
+      <View style={containerStyle}>
+        <View style={contentStyle}>
+          <Button
+            {...linkProps}
+            title='返回'
+            onPress={() => this.navigator.pop()}
+          />
+          <Text style={{color: '#fff', fontSize: 17, fontWeight: 'bold'}}>
+            自定义导航条
+          </Text>
+          <Button
+            {...linkProps}
+            title='更多'
+            onPress={() => alert('点击了更多操作')}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  renderPage() {
+    return (
+      <View style={{flex: 1, padding: 20}}>
+        <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+          <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+            覆写 renderNavigationBar 可自定义背景与布局。
+          </Text>
+        </View>
+
+        <Button
+          type='primary'
+          title='返回'
+          style={{marginTop: 20}}
+          onPress={() => this.navigator.pop()}
+        />
+      </View>
+    );
+  }
+}
+
+class NavigationBarInsetsTruePage extends NavigationPage {
   static defaultProps = {
     ...NavigationPage.defaultProps,
     title: 'Insets = true',
@@ -223,25 +268,9 @@ class NavigationBarInsetsTruePage extends NavigationPage {
     return (
       <ScrollView style={{flex: 1, backgroundColor: '#e8f5e9'}}>
         <View style={{padding: 20}}>
-          <View style={{backgroundColor: '#fff', padding: 15, borderRadius: 8}}>
-            <Text style={{fontSize: 16, color: '#2e7d32', fontWeight: 'bold'}}>
-              navigationBarInsets = true
-            </Text>
-            <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-              ✓ 内容区域增加导航条占用空间{'\n\n'}
-              工作原理：{'\n'}
-              • 内容区域自动添加顶部边距{'\n'}
-              • 边距 = 导航条高度 + 状态栏高度{'\n'}
-              • 内容不会被导航条遮挡{'\n'}
-              • 这是默认行为
-            </Text>
-          </View>
-
-          <View style={{backgroundColor: '#c8e6c9', padding: 15, borderRadius: 8, marginTop: 15}}>
-            <Text style={{fontSize: 14, color: '#333', lineHeight: 20}}>
-              当前页面背景色：绿色{'\n\n'}
-              可以看到内容在导航条下方开始显示，{'\n'}
-              导航条不会遮挡页面内容
+          <View style={{backgroundColor: '#fff', padding: 16, borderRadius: 8}}>
+            <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+              navigationBarInsets 默认为 true，内容自动避开导航条。
             </Text>
           </View>
 
@@ -257,7 +286,6 @@ class NavigationBarInsetsTruePage extends NavigationPage {
   }
 }
 
-// 5b. navigationBarInsets 属性演示 - false
 class NavigationBarInsetsFalsePage extends NavigationPage {
   static defaultProps = {
     ...NavigationPage.defaultProps,
@@ -270,42 +298,9 @@ class NavigationBarInsetsFalsePage extends NavigationPage {
     return (
       <ScrollView style={{flex: 1, backgroundColor: '#ffebee'}}>
         <View style={{padding: 20, paddingTop: 0}}>
-          <View style={{backgroundColor: '#ffcdd2', padding: 15, borderRadius: 8}}>
-            <Text style={{fontSize: 16, color: '#c62828', fontWeight: 'bold'}}>
-              ⚠️ 被导航条遮挡的区域
-            </Text>
-            <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-              navigationBarInsets = false{'\n\n'}
-              这段文字的顶部被导航条遮挡了！{'\n'}
-              因为 paddingTop = 0，内容从屏幕顶部开始显示
-            </Text>
-          </View>
-
-          <View style={{backgroundColor: '#fff', padding: 15, borderRadius: 8, marginTop: 15}}>
-            <Text style={{fontSize: 16, color: '#c62828', fontWeight: 'bold'}}>
-              navigationBarInsets = false
-            </Text>
-            <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-              ✗ 内容区域不增加导航条占用空间{'\n\n'}
-              工作原理：{'\n'}
-              • 内容从屏幕顶部开始{'\n'}
-              • 内容会被导航条遮挡{'\n'}
-              • 需要手动添加顶部padding{'\n'}
-              • 适用于需要自定义滚动控制的场景
-            </Text>
-          </View>
-
-          <View style={{backgroundColor: '#e1f5fe', padding: 15, borderRadius: 8, marginTop: 15}}>
-            <Text style={{fontSize: 14, color: '#01579b', fontWeight: 'bold'}}>
-              💡 使用场景示例：
-            </Text>
-            <Text style={{fontSize: 14, color: '#333', marginTop: 10, lineHeight: 20}}>
-              当你需要在 ScrollView 滚动时：{'\n'}
-              • 向上滚动：隐藏导航条，内容占据全屏{'\n'}
-              • 向下滚动：显示导航条{'\n\n'}
-              这种情况下设置 navigationBarInsets = false，{'\n'}
-              并在 ScrollView 内部手动添加顶部占位空间，{'\n'}
-              当导航条隐藏后，顶部空间就能被内容利用
+          <View style={{backgroundColor: '#fff', padding: 16, borderRadius: 8}}>
+            <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+              navigationBarInsets 设为 false 后，请自行处理顶部间距。
             </Text>
           </View>
 
@@ -321,33 +316,19 @@ class NavigationBarInsetsFalsePage extends NavigationPage {
   }
 }
 
-// 6. scene 属性演示
 class SceneDemoPage extends NavigationPage {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sceneType: props.sceneType || 'PushFromRight (默认)',
-    };
-  }
-
   static defaultProps = {
     ...NavigationPage.defaultProps,
-    title: '转场效果',
+    title: 'scene 示例',
     showBackButton: true,
   };
 
   renderPage() {
-    const {sceneType} = this.state;
     return (
       <View style={{flex: 1, padding: 20}}>
-        <View style={{backgroundColor: '#f3e5f5', padding: 15, borderRadius: 8}}>
-          <Text style={{fontSize: 16, color: '#7b1fa2', fontWeight: 'bold'}}>
-            scene 属性演示
-          </Text>
-          <Text style={{fontSize: 14, color: '#666', marginTop: 10, lineHeight: 20}}>
-            当前转场效果: {sceneType}{'\n\n'}
-            NavigationPage 默认使用 PushFromRight{'\n'}
-            (从右侧推入，iOS 风格)
+        <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+          <Text style={{fontSize: 15, color: '#333', lineHeight: 22}}>
+            此页展示页面切换。
           </Text>
         </View>
 
@@ -362,7 +343,6 @@ class SceneDemoPage extends NavigationPage {
   }
 }
 
-// 主示例页面
 export default class NavigationPageExample extends NavigationPage {
 
   static defaultProps = {
@@ -374,76 +354,85 @@ export default class NavigationPageExample extends NavigationPage {
   renderPage() {
     return (
       <ScrollView style={{flex: 1}}>
-        <View style={{height: 20}} />
-        
-        <View style={{backgroundColor: '#fff3cd', padding: 15, margin: 15, borderRadius: 8}}>
-          <Text style={{fontSize: 14, color: '#856404', lineHeight: 20}}>
-            ⚠️ NavigationPage 说明：{'\n'}
-            • NavigationPage 继承自 BasePage{'\n'}
-            • 在 BasePage 基础上添加了 NavigationBar 导航条{'\n'}
-            • 默认转场效果为 PushFromRight（从右侧推入）{'\n'}
-            • 提供多个方法自定义导航条显示内容
+        <View style={{paddingHorizontal: 16, paddingVertical: 12}}>
+          <View style={{backgroundColor: '#f5f5f5', padding: 16, borderRadius: 8}}>
+            <Text style={{fontSize: 14, color: '#333', lineHeight: 22}}>
+              NavigationPage 提供带导航条的页面模板。
+            </Text>
+          </View>
+
+          <Text style={{marginTop: 24, color: '#666', fontSize: 12}}>
+            基础属性
           </Text>
+          <ListRow
+            title='showBackButton = true'
+            detail='默认返回按钮'
+            onPress={() => this.navigator.push(<BasicNavigationPage />)}
+            topSeparator='full'
+          />
+          <ListRow
+            title='showBackButton = false'
+            detail='隐藏返回按钮'
+            onPress={() => this.navigator.push(<NoBackButtonPage />)}
+            bottomSeparator='full'
+          />
+
+          <Text style={{marginTop: 24, color: '#666', fontSize: 12}}>
+            scene 基础用例
+          </Text>
+          <ListRow
+            title='scene页面切换'
+            detail='点击切换'
+            onPress={() => this.navigator.push({
+              view: <SceneDemoPage />,
+              scene: TeaNavigator.SceneConfigs.PushFromRight,
+            })}
+            topSeparator='full'
+            bottomSeparator='full'
+          />
+
+          <Text style={{marginTop: 24, color: '#666', fontSize: 12}}>
+            navigationBarInsets
+          </Text>
+          <ListRow
+            title='navigationBarInsets = true'
+            detail='默认留白'
+            onPress={() => this.navigator.push(<NavigationBarInsetsTruePage />)}
+            topSeparator='full'
+          />
+          <ListRow
+            title='navigationBarInsets = false'
+            detail='无留白'
+            onPress={() => this.navigator.push(<NavigationBarInsetsFalsePage />)}
+            bottomSeparator='full'
+          />
+
+          <Text style={{marginTop: 24, color: '#666', fontSize: 12}}>
+            自定义导航条
+          </Text>
+          <ListRow
+            title='renderNavigationTitle()'
+            detail='自定义标题'
+            onPress={() => this.navigator.push(<CustomTitlePage />)}
+            topSeparator='full'
+          />
+          <ListRow
+            title='renderNavigationLeftView()'
+            detail='自定义左按钮'
+            onPress={() => this.navigator.push(<CustomLeftViewPage />)}
+          />
+          <ListRow
+            title='renderNavigationRightView()'
+            detail='自定义右按钮'
+            onPress={() => this.navigator.push(<CustomRightViewPage />)}
+          />
+          <ListRow
+            title='renderNavigationBar()'
+            detail='完整自定义'
+            onPress={() => this.navigator.push(<CustomNavigationBarPage />)}
+            bottomSeparator='full'
+          />
         </View>
-
-        <View style={{height: 15}} />
-        <Text style={{marginLeft: 20, color: '#999', fontSize: 12}}>
-          基础属性演示
-        </Text>
-        <ListRow 
-          title='基础用法' 
-          detail='title + showBackButton'
-          onPress={() => this.navigator.push(<BasicNavigationPage />)}
-          topSeparator='full'
-        />
-        <ListRow 
-          title='scene 属性' 
-          detail='PushFromRight (默认)'
-          onPress={() => this.navigator.push(<SceneDemoPage sceneType='PushFromRight (默认)' />)}
-          bottomSeparator='full'
-        />
-
-        <View style={{height: 20}} />
-        <Text style={{marginLeft: 20, color: '#999', fontSize: 12}}>
-          navigationBarInsets 属性演示 - 内容区域占用空间
-        </Text>
-        <ListRow 
-          title='开启导航条占用空间' 
-          detail='navigationBarInsets = true'
-          onPress={() => this.navigator.push(<NavigationBarInsetsTruePage />)}
-          topSeparator='full'
-        />
-        <ListRow 
-          title='关闭导航条占用空间' 
-          detail='navigationBarInsets = false'
-          onPress={() => this.navigator.push(<NavigationBarInsetsFalsePage />)}
-          bottomSeparator='full'
-        />
-        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 11, marginTop: 5, lineHeight: 16}}>
-          true 时内容不被导航条遮挡，false 时内容从屏幕顶部开始
-        </Text>
-
-        <View style={{height: 20}} />
-        <Text style={{marginLeft: 20, color: '#999', fontSize: 12}}>
-          自定义导航条方法演示
-        </Text>
-        <ListRow 
-          title='renderNavigationTitle()' 
-          detail='自定义标题'
-          onPress={() => this.navigator.push(<CustomTitlePage />)}
-          topSeparator='full'
-        />
-        <ListRow 
-          title='renderNavigationLeftView()' 
-          detail='自定义左按钮'
-          onPress={() => this.navigator.push(<CustomLeftViewPage />)}
-        />
-        <ListRow 
-          title='renderNavigationRightView()' 
-          detail='自定义右按钮'
-          onPress={() => this.navigator.push(<CustomRightViewPage />)}
-          bottomSeparator='full'
-        />
       </ScrollView>
     );
   }

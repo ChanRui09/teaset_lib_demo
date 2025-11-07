@@ -39,7 +39,7 @@ export default class NavigationBarExample extends NavigationPage {
     this.titleItems = ['String', 'Custom'];
     this.titleStyleItems = ['Default', 'Emphasis'];
     this.leftViewItems = ['None', 'Back button', 'Link button', 'Icon button', 'Two icon button'];
-    this.rightViewItems = ['None', 'Link button', 'Icon button', 'Two icon button'];
+    this.rightViewItems = ['None', 'Back button', 'Link button', 'Icon button', 'Two icon button', ];
     this.bgColorItems = ['Default', 'Custom'];
     this.tintColorItems = ['Default', 'Custom', 'None'];
     this.statusBarStyleItems = ['Default', 'Light Content', 'Dark Content'];
@@ -97,8 +97,8 @@ export default class NavigationBarExample extends NavigationPage {
       statusBarStyle: 'Light Content',
       statusBarHidden: false,
       statusBarInsets: true,
-  titleTextKey: 'Multiline',
-  titleNumberOfLinesKey: this.titleNumberOfLinesItems[0].key,
+      titleTextKey: 'Multiline',
+      titleNumberOfLinesKey: this.titleNumberOfLinesItems[0].key,
       titleAllowFontScaling: false,
       buttonHitSlopKey: this.buttonHitSlopItems[0].key,
       linkButtonTitleKey: this.linkButtonTitleItems[0].key,
@@ -259,10 +259,12 @@ export default class NavigationBarExample extends NavigationPage {
 
   renderNavigationTitle() {
     let {title, titleAllowFontScaling} = this.state;
+    const titleStyleOverride = this.titleStyleValue;
     switch (title) {
       case 'String':
         return (
           <NavigationBar.Title
+            style={titleStyleOverride}
             text={this.titleTextValue}
             numberOfLines={this.titleNumberOfLinesValue}
             allowFontScaling={titleAllowFontScaling}
@@ -277,7 +279,7 @@ export default class NavigationBarExample extends NavigationPage {
         };
         return (
           <View style={titleStyle}>
-            <Label style={{color: Theme.navTitleColor, fontSize: 15}} text='Title' />
+            <Label style={[{color: Theme.navTitleColor, fontSize: 15}, titleStyleOverride]} text='Title' />
             <Label style={{color: Theme.navTitleColor, fontSize: 11}}  text='Secondary title' />
           </View>
         );

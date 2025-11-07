@@ -68,9 +68,21 @@ export default class ProjectorExample extends NavigationPage {
           />
         <ListRow
           title='slideStyle (胶片样式)'
-          detail={slideStyle ? 'borderRadius: 20, margin: 10' : '默认'}
+          detail={slideStyle ? '圆角 + 边框 + 阴影' : '默认'}
           onPress={() => this.setState({
-            slideStyle: slideStyle ? null : {borderRadius: 20, margin: 10}
+            slideStyle: slideStyle ? null : {
+              marginHorizontal: 16,
+              marginVertical: 12,
+              borderRadius: 24,
+              borderWidth: 2,
+              borderColor: '#3f51b5',
+              shadowColor: '#000',
+              shadowOpacity: 0.2,
+              shadowRadius: 12,
+              shadowOffset: {width: 0, height: 6},
+              elevation: 6,
+              overflow: 'hidden',
+            }
           })}
           bottomSeparator='full'
           />

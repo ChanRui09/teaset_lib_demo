@@ -7,10 +7,6 @@ import {StyleSheet, View, Text, Image, ScrollView, Dimensions, Switch, Alert} fr
 
 import {NavigationPage, ListRow, Carousel, PullPicker, Label, Toast} from 'teaset';
 
-const SIMULATED_STATUS_BAR_HEIGHT = 24;
-const SIMULATED_NAV_BAR_HEIGHT = 56;
-const SIMULATED_OVERLAY_HEIGHT = SIMULATED_STATUS_BAR_HEIGHT + SIMULATED_NAV_BAR_HEIGHT;
-
 export default class CarouselExample extends NavigationPage {
 
   static defaultProps = {
@@ -25,7 +21,7 @@ export default class CarouselExample extends NavigationPage {
     this.controlItems = ['none', 'default', 'custom'];
     this.directionItems = ['forward', 'backward'];
     this.intervalItems = [1000, 2000, 3000, 5000, 8000];
-    this.scrollEventThrottleItems = [1, 16, 50, 100, 200, 500, 1000];
+    this.scrollEventThrottleItems = [1, 200, 1000];
     this.scrollEventCount = 0;
     this.lastScrollEventTime = Date.now();
     Object.assign(this.state, {
@@ -47,8 +43,8 @@ export default class CarouselExample extends NavigationPage {
       currentIndex: 0,
       totalPages: 3,
       scrollEventCounter: 0,
-      scrollEventRate: 0,
-      automaticallyAdjustContentInsets: false,
+  scrollEventRate: 0,
+  automaticallyAdjustContentInsets: false,
       contentInsetTop: 0,
     });
   }
@@ -141,7 +137,7 @@ export default class CarouselExample extends NavigationPage {
     this.scrollEventCount++;
     this.lastScrollEventTime = now;
 
-    const insetTop = this.state.automaticallyAdjustContentInsets ? SIMULATED_OVERLAY_HEIGHT : 0;
+    const insetTop = event?.nativeEvent?.contentInset?.top || 0;
     this.setState(prevState => {
       let nextState = {
         scrollEventCounter: this.scrollEventCount,
@@ -218,17 +214,15 @@ export default class CarouselExample extends NavigationPage {
   }
 
   renderPage() {
-    let {width, carousel, interval, direction, cycle, horizontal, pagingEnabled,
-      showsHorizontalScrollIndicator, showsVerticalScrollIndicator,
+    let {width, carousel, interval, direction, cycle, horizontal, pagingEnabled, 
+      showsHorizontalScrollIndicator, showsVerticalScrollIndicator, 
       alwaysBounceHorizontal, alwaysBounceVertical, bounces, scrollEventThrottle,
-      automaticallyAdjustContentInsets, startIndex,
-      control, currentIndex, totalPages, scrollEventCounter, scrollEventRate, contentInsetTop} = this.state;
-
+  automaticallyAdjustContentInsets, startIndex,
+  control, currentIndex, totalPages, scrollEventCounter, scrollEventRate, contentInsetTop} = this.state;
+    
     // 动态计算高度：横向时固定高度，纵向时根据内容调整
     const carouselHeight = horizontal ? 238 : 238;
     const imageHeight = horizontal ? 238 : 238;
-    const simulatedInsetTop = automaticallyAdjustContentInsets ? SIMULATED_OVERLAY_HEIGHT : 0;
-    const previewHeight = carouselHeight + SIMULATED_OVERLAY_HEIGHT;
     
     return (
       <View style={{flex: 1}}>
@@ -241,41 +235,33 @@ export default class CarouselExample extends NavigationPage {
           <Label style={{fontSize: 10, color: '#856404', marginTop: 2}} text='👆 Manually scroll the carousel above to see event frequency' />
         </View>
 
-        <View style={{height: previewHeight, backgroundColor: '#00000008'}}>
-          <View style={styles.overlayContainer} pointerEvents='none'>
-            <View style={styles.overlayStatusSpacer} />
-            <View style={styles.overlayNavBar}>
-              <Text style={styles.overlayTitle}>Translucent Header (simulated)</Text>
-            </View>
-          </View>
-          <View style={[styles.carouselShell, automaticallyAdjustContentInsets ? {paddingTop: simulatedInsetTop} : null]}>
-            <Carousel
-              ref={ref => this.carouselRef = ref}
-              style={{flex: 1}}
-              carousel={carousel}
-              interval={interval}
-              startIndex={startIndex}
-              direction={direction}
-              cycle={cycle}
-              control={this.renderControl()}
-              horizontal={horizontal}
-              pagingEnabled={pagingEnabled}
-              showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
-              showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-              alwaysBounceHorizontal={alwaysBounceHorizontal}
-              alwaysBounceVertical={alwaysBounceVertical}
-              bounces={bounces}
-              scrollEventThrottle={scrollEventThrottle}
-              automaticallyAdjustContentInsets={automaticallyAdjustContentInsets}
-              onScroll={(event) => this.handleScroll(event)}
-              onChange={(index, total) => this.handleCarouselChange(index, total)}
-              onLayout={e => this.setState({width: e.nativeEvent.layout.width})}
-            >
-              <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset1.jpg')} />
-              <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset2.jpg')} />
-              <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset3.jpg')} />
-            </Carousel>
-          </View>
+        <View style={{height: carouselHeight, backgroundColor: '#00000008'}}>
+          <Carousel
+            ref={ref => this.carouselRef = ref}
+            style={{flex: 1}}
+            carousel={carousel}
+            interval={interval}
+            startIndex={startIndex}
+            direction={direction}
+            cycle={cycle}
+            control={this.renderControl()}
+            horizontal={horizontal}
+            pagingEnabled={pagingEnabled}
+            showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
+            showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+            alwaysBounceHorizontal={alwaysBounceHorizontal}
+            alwaysBounceVertical={alwaysBounceVertical}
+            bounces={bounces}
+            scrollEventThrottle={scrollEventThrottle}
+            automaticallyAdjustContentInsets={automaticallyAdjustContentInsets}
+            onScroll={(event) => this.handleScroll(event)}
+            onChange={(index, total) => this.handleCarouselChange(index, total)}
+            onLayout={e => this.setState({width: e.nativeEvent.layout.width})}
+          >
+            <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset1.jpg')} />
+            <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset2.jpg')} />
+            <Image style={{width, height: imageHeight}} resizeMode='cover' source={require('../images/teaset3.jpg')} />
+          </Carousel>
         </View>
 
         <ScrollView
@@ -405,22 +391,22 @@ export default class CarouselExample extends NavigationPage {
           <ListRow
             title='automaticallyAdjustContentInsets'
             detail={<Switch value={automaticallyAdjustContentInsets} onValueChange={value => {
-              const simulatedTop = value ? SIMULATED_OVERLAY_HEIGHT : 0;
-              this.setState({
-                automaticallyAdjustContentInsets: value,
-                contentInsetTop: simulatedTop,
-              });
+              this.setState({automaticallyAdjustContentInsets: value});
               console.log('[Carousel] automaticallyAdjustContentInsets prop:', value);
             }} />}
           />
           <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
-            <Label style={{color: '#999', fontSize: 11}} text='Adjust content inset automatically (iOS only)' />
+            <Label style={{color: '#999', fontSize: 11}} text='Adjust content inset automatically' />
           </View>
 
           <View style={{paddingHorizontal: 12, paddingVertical: 4}}>
             <Label
               style={{color: '#999', fontSize: 11}}
-              text='Simulated iOS effect: enabling this adds a top inset so the carousel no longer hides beneath the translucent header'
+              text='when enabled, the ScrollView adds top/bottom insets'
+            />
+            <Label
+              style={{color: '#999', fontSize: 11}}
+              text='so content does not hide under navigation bars.'
             />
             <Label
               style={{color: '#666', fontSize: 11, marginTop: 4}}
@@ -476,31 +462,3 @@ export default class CarouselExample extends NavigationPage {
   }
 
 }
-
-const styles = StyleSheet.create({
-  overlayContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-  },
-  overlayStatusSpacer: {
-    height: SIMULATED_STATUS_BAR_HEIGHT,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  },
-  overlayNavBar: {
-    height: SIMULATED_NAV_BAR_HEIGHT,
-    backgroundColor: 'rgba(33, 150, 243, 0.75)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  overlayTitle: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 15,
-  },
-  carouselShell: {
-    flex: 1,
-    overflow: 'hidden',
-  },
-});

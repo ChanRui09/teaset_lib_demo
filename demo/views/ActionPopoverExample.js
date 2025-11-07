@@ -3,7 +3,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {View, Text, ScrollView, Switch, TouchableOpacity} from 'react-native';
+import {View, Text, ScrollView, Switch} from 'react-native';
 
 import {NavigationPage, ActionPopover, Button, Label, Theme, Overlay} from 'teaset';
 
@@ -24,6 +24,13 @@ export default class ActionPopoverExample extends NavigationPage {
     this.separatorLeftRef = React.createRef();
     this.separatorRightRef = React.createRef();
     this.separatorBothRef = React.createRef();
+    this.alignStartRef = React.createRef();
+    this.alignCenterRef = React.createRef();
+    this.alignEndRef = React.createRef();
+    this.directionUpRef = React.createRef();
+    this.directionDownRef = React.createRef();
+    this.directionLeftRef = React.createRef();
+    this.directionRightRef = React.createRef();
 
     this.state = {
       showArrow: true,
@@ -37,21 +44,36 @@ export default class ActionPopoverExample extends NavigationPage {
     }
   }
 
-  show(view) {
+  getDefaultItems() {
+    return [
+      {title: 'Copy', onPress: () => alert('Copy')},
+      {title: 'Remove', onPress: () => alert('Remove')},
+      {title: 'Share', onPress: () => alert('Share')},
+    ];
+  }
+
+  measureView(view, callback) {
+    if (!view || !view.measure) {
+      return;
+    }
     view.measure((x, y, width, height, pageX, pageY) => {
-      let items = [
-        {title: 'Copy', onPress: () => alert('Copy')},
-        {title: 'Remove', onPress: () => alert('Remove')},
-        {title: 'Share', onPress: () => alert('Share')},
-      ];
-      this.overlayKey = ActionPopover.show({x: pageX, y: pageY, width, height}, items);
+      callback({x: pageX, y: pageY, width, height});
+    });
+  }
+
+  show(view) {
+    this.measureView(view, fromBounds => {
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+      this.overlayKey = ActionPopover.show(fromBounds, this.getDefaultItems());
     });
   }
 
   showCustomTitle(view) {
-    view.measure((x, y, width, height, pageX, pageY) => {
-      // 演示 title 作为组件
-      let items = [
+    this.measureView(view, fromBounds => {
+      const items = [
         {
           title: (
             <View style={{alignItems: 'center'}}>
@@ -59,7 +81,7 @@ export default class ActionPopoverExample extends NavigationPage {
               <Text style={{fontSize: 12, color: Theme.apItemTitleColor}}>复制</Text>
             </View>
           ),
-          onPress: () => alert('复制')
+          onPress: () => alert('复制'),
         },
         {
           title: (
@@ -68,7 +90,7 @@ export default class ActionPopoverExample extends NavigationPage {
               <Text style={{fontSize: 12, color: Theme.apItemTitleColor}}>删除</Text>
             </View>
           ),
-          onPress: () => alert('删除')
+          onPress: () => alert('删除'),
         },
         {
           title: (
@@ -77,21 +99,29 @@ export default class ActionPopoverExample extends NavigationPage {
               <Text style={{fontSize: 12, color: Theme.apItemTitleColor}}>分享</Text>
             </View>
           ),
-          onPress: () => alert('分享')
-        }
+          onPress: () => alert('分享'),
+        },
       ];
-      this.overlayKey = ActionPopover.show({x: pageX, y: pageY, width, height}, items, {direction: 'down'});
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+      this.overlayKey = ActionPopover.show(fromBounds, items, {direction: 'down'});
     });
   }
 
   showArrowDemo(view) {
     let {showArrow} = this.state;
-    view.measure((x, y, width, height, pageX, pageY) => {
-      let items = [
-        {title: 'Show arrow 示例', onPress: () => alert(`showArrow=${showArrow}`)},
+    this.measureView(view, fromBounds => {
+      const items = [
+        {title: `showArrow = ${showArrow}`, onPress: () => alert(`showArrow=${showArrow}`)},
         {title: '常规项', onPress: () => alert('常规项')},
       ];
-      this.overlayKey = ActionPopover.show({x: pageX, y: pageY, width, height}, items, {direction: 'down', showArrow});
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+      this.overlayKey = ActionPopover.show(fromBounds, items, {direction: 'down', showArrow});
     });
   }
 
@@ -125,55 +155,80 @@ export default class ActionPopoverExample extends NavigationPage {
 
   showSeparatorExample(view, items, alertPrefix) {
     if (!view) return;
-    view.measure((x, y, width, height, pageX, pageY) => {
-      const fromBounds = {x: pageX, y: pageY, width, height};
-      const handlePress = message => {
-        this.overlayKey && Overlay.hide(this.overlayKey);
-        alert(`${alertPrefix}: ${message}`);
-      };
-      const overlayView = (
+    this.measureView(view, fromBounds => {
+      const content = (
         <Overlay.PopoverView
           fromBounds={fromBounds}
           direction='up'
           align='center'
-          showArrow={true}
+          showArrow
           overlayOpacity={0}
         >
-          <View style={{
-            flexDirection: 'row',
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: '#ffca28',
-            overflow: 'hidden',
-          }}>
-            {items.map((item, index) => (
-              <TouchableOpacity
-                key={`separator-${index}`}
-                activeOpacity={0.75}
-                onPress={() => handlePress(item.title)}
-                style={[{
-                  paddingVertical: 10,
-                  paddingHorizontal: 14,
-                  backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                  minWidth: 92,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderColor: '#ffca28',
-                  borderLeftWidth: item.leftSeparator ? 2 : 0,
-                  borderRightWidth: item.rightSeparator ? 2 : 0,
-                },
-                index === 0 ? {borderTopLeftRadius: 10, borderBottomLeftRadius: 10} : null,
-                index === items.length - 1 ? {borderTopRightRadius: 10, borderBottomRightRadius: 10} : null,
-                ]}
-              >
-                <Text style={{color: '#fff8e1', fontSize: 14}}>{item.title}</Text>
-              </TouchableOpacity>
-            ))}
+          <View
+            style={{
+              flexDirection: 'row',
+              backgroundColor: 'transparent',
+              borderRadius: Theme.apBorderRadius,
+              borderWidth: Theme.apSeparatorWidth,
+              borderColor: '#ff9800',
+              overflow: 'hidden',
+            }}
+          >
+            {items.map((item, index) => {
+              const titleNode = (
+                <Text style={{color: '#d35400', fontSize: Theme.apItemFontSize, fontWeight: 'bold'}}>
+                  {item.title}
+                </Text>
+              );
+              return (
+                <ActionPopover.ActionPopoverView.Item
+                  key={`separator-${index}`}
+                  title={titleNode}
+                  leftSeparator={item.leftSeparator}
+                  rightSeparator={item.rightSeparator}
+                  style={[
+                    {backgroundColor: '#fffbe6'},
+                    item.leftSeparator ? {borderLeftWidth: 2, borderLeftColor: '#ff9800'} : {borderLeftWidth: 0},
+                    item.rightSeparator ? {borderRightWidth: 2, borderRightColor: '#ff9800'} : {borderRightWidth: 0},
+                  ]}
+                  onPress={() => {
+                    if (this.overlayKey) {
+                      Overlay.hide(this.overlayKey);
+                      this.overlayKey = null;
+                    }
+                    alert(`${alertPrefix}: ${item.title}`);
+                  }}
+                />
+              );
+            })}
           </View>
         </Overlay.PopoverView>
       );
-      this.overlayKey = Overlay.show(overlayView);
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+      this.overlayKey = Overlay.show(content);
+    });
+  }
+
+  showWithAlign(view, align) {
+    this.measureView(view, fromBounds => {
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+      this.overlayKey = ActionPopover.show(fromBounds, this.getDefaultItems(), {align});
+    });
+  }
+
+  showWithDirection(view, direction) {
+    this.measureView(view, fromBounds => {
+      if (this.overlayKey) {
+        Overlay.hide(this.overlayKey);
+        this.overlayKey = null;
+      }
+      this.overlayKey = ActionPopover.show(fromBounds, this.getDefaultItems(), {direction});
     });
   }
 
@@ -182,29 +237,18 @@ export default class ActionPopoverExample extends NavigationPage {
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
         
-        <Label type='detail' size='xl' text='基本用法' />
+        <Label type='detail' size='md' text='基本用法' style={{fontWeight: 'bold', color: '#000'}} />
         <View style={{height: 10}} />
         <View style={{alignItems: 'center'}}>
           <Button title='Show ActionPopover' ref={this.apButtonRef} onPress={() => this.show(this.apButtonRef.current)} />
         </View>
         
         <View style={{height: 20}} />
-        <Label type='detail' size='xl' text='showArrow 开关' />
+        <Label type='detail' size='md' text='showArrow 开关' style={{fontWeight: 'bold', color: '#000'}} />
         <View style={{height: 10}} />
-        <View style={{
-          backgroundColor: '#f0f0f0',
-          padding: 15,
-          margin: 10,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: '#ccc'
-        }}>
-          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
-            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
-            • showArrow：控制是否显示气泡箭头（默认 true）{'\n'}
-            • 通过下方开关切换，再点击按钮观察箭头变化
-          </Text>
-        </View>
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          showArrow 属性演示 - 控制是否显示气泡箭头 (默认 true)
+        </Text>
         <View style={{marginHorizontal: 10, padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#e0e0e0', backgroundColor: '#fff'}}>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={{fontSize: 14, color: '#333'}}>showArrow: {this.state.showArrow ? 'true' : 'false'}</Text>
@@ -220,23 +264,38 @@ export default class ActionPopoverExample extends NavigationPage {
         </View>
 
         <View style={{height: 20}} />
-        <Label type='detail' size='xl' text='title 作为组件' />
+        <Label type='detail' size='md' text='align 对齐方式' style={{fontWeight: 'bold', color: '#000'}} />
         <View style={{height: 10}} />
-        <View style={{
-          backgroundColor: '#f0f0f0',
-          padding: 15,
-          margin: 10,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: '#ccc'
-        }}>
-          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
-            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
-            • title 可以是字符串、数字或 React Native 组件{'\n'}
-            • 自定义组件可以实现图标+文字的组合效果{'\n'}
-            • 本示例展示了 emoji 图标 + 文字的垂直布局
-          </Text>
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          align 属性演示 - 控制气泡内容相对触发点的水平对齐 (start/center/end)
+        </Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 12}}>
+          <Button title='Start' ref={this.alignStartRef} onPress={() => this.showWithAlign(this.alignStartRef.current, 'start')} />
+          <Button title='Center' ref={this.alignCenterRef} onPress={() => this.showWithAlign(this.alignCenterRef.current, 'center')} />
+          <Button title='End' ref={this.alignEndRef} onPress={() => this.showWithAlign(this.alignEndRef.current, 'end')} />
         </View>
+
+        <View style={{height: 20}} />
+        <Label type='detail' size='md' text='direction 弹出方向' style={{fontWeight: 'bold', color: '#000'}} />
+        <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          direction 属性演示 - 控制气泡从触发点弹出的方向 (up/down/left/right)
+        </Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 12}}>
+          <Button title='Up' ref={this.directionUpRef} onPress={() => this.showWithDirection(this.directionUpRef.current, 'up')} />
+          <Button title='Down' ref={this.directionDownRef} onPress={() => this.showWithDirection(this.directionDownRef.current, 'down')} />
+        </View>
+        <View style={{alignItems: 'center', marginTop: 12}}>
+          <Button title='Left' ref={this.directionLeftRef} onPress={() => this.showWithDirection(this.directionLeftRef.current, 'left')} style={{marginBottom: 12}} />
+          <Button title='Right' ref={this.directionRightRef} onPress={() => this.showWithDirection(this.directionRightRef.current, 'right')} />
+        </View>
+
+        <View style={{height: 20}} />
+        <Label type='detail' size='md' text='title 作为组件' style={{fontWeight: 'bold', color: '#000'}} />
+        <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          title 属性演示 - 支持字符串、数字或自定义 React 组件
+        </Text>
         <View style={{alignItems: 'center'}}>
           <Button 
             title='自定义 Title 组件' 
@@ -247,26 +306,11 @@ export default class ActionPopoverExample extends NavigationPage {
         </View>
         
         <View style={{height: 20}} />
-        <Label type='detail' size='xl' text='leftSeparator / rightSeparator' />
+        <Label type='detail' size='md' text='leftSeparator / rightSeparator' style={{fontWeight: 'bold', color: '#000'}} />
         <View style={{height: 10}} />
-        <View style={{
-          backgroundColor: '#f0f0f0',
-          padding: 15,
-          margin: 10,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: '#ccc'
-        }}>
-          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
-            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
-            • leftSeparator：控制左侧竖线{'\n'}
-            • rightSeparator：控制右侧竖线{'\n'}
-            • “无分隔线”：两项均无分隔线{'\n'}
-            • “仅左侧”：第一项左边缘绘制竖线{'\n'}
-            • “仅右侧”：第二项右边缘绘制竖线{'\n'}
-            • “左右都有”：第一项左右两侧同时显示竖线
-          </Text>
-        </View>
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          leftSeparator / rightSeparator 属性演示 - 控制操作项左右分隔线的显示
+        </Text>
         <View style={{marginHorizontal: 10}}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Button

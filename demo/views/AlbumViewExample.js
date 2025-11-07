@@ -7,6 +7,14 @@ import {View, Image, TouchableOpacity, StatusBar, ScrollView, Switch} from 'reac
 
 import {Theme, NavigationPage, AlbumView, Overlay, Button, ListRow, Label, Toast} from 'teaset';
 
+import SelectRow from './SelectRow';
+
+const CustomAlbumControl = ({index, total}) => (
+  <View style={{position: 'absolute', bottom: 40, alignSelf: 'center', backgroundColor: 'rgba(0, 0, 0, 0.55)', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16}}>
+    <Label style={{color: '#fff', fontSize: 12}} text={`自定义控制器 ${index + 1} / ${total}`} />
+  </View>
+);
+
 export default class AlbumViewExample extends NavigationPage {
 
   static defaultProps = {
@@ -32,11 +40,37 @@ export default class AlbumViewExample extends NavigationPage {
       require('../images/teaset1_s.jpg'),
     ];
     this.imageRefs = {};
+    this.controlItems = [
+      {key: 'none', label: 'false（不显示控制器）'},
+      {key: 'default', label: 'true（默认控制器）'},
+      {key: 'custom', label: '自定义控制器'},
+    ];
+    this.maxScaleItems = [
+      {key: '1.5', label: '1.5x', value: 1.5},
+      {key: '2', label: '2.0x', value: 2},
+      {key: '2.5', label: '2.5x', value: 2.5},
+      {key: '3', label: '3.0x（默认）', value: 3},
+      {key: '5', label: '5.0x', value: 5},
+    ];
+    this.spaceItems = [
+      {key: '0', label: '0 px（无间隔）', value: 0},
+      {key: '20', label: '20 px（默认）', value: 20},
+      {key: '40', label: '40 px', value: 40},
+      {key: '80', label: '80 px（大间隔）', value: 80},
+    ];
+    this.defaultIndexItems = this.images.map((item, idx) => ({
+      key: String(idx),
+      label: `${idx} （第${idx + 1}张）`,
+      value: idx,
+    }));
     Object.assign(this.state, {
       controlledIndex: 0,
       useControlledMode: false,
-      maxScale: 3,
-      space: 20,
+      controlKey: this.controlItems[1].key,
+      maxScaleKey: this.maxScaleItems[3].key,
+      spaceKey: this.spaceItems[1].key,
+      defaultIndexKey: this.defaultIndexItems[0].key,
+      usePresetDefaultIndex: false,
       showBackground: false,
       loadInfo: '',
       eventLogs: [],
@@ -52,6 +86,11 @@ export default class AlbumViewExample extends NavigationPage {
       Toast.hide(this.toastKey);
       this.toastKey = null;
     }
+  }
+
+  getSelectedItem(items, key) {
+    if (!items || !items.length) return null;
+    return items.find(item => item.key === key) || items[0];
   }
 
   showToast(message, duration = 1500) {
@@ -75,7 +114,25 @@ export default class AlbumViewExample extends NavigationPage {
   }
 
   onImagePress(index) {
-    let {useControlledMode, controlledIndex, maxScale, space, showBackground} = this.state;
+    let {
+      useControlledMode,
+      controlledIndex,
+      controlKey,
+      maxScaleKey,
+      spaceKey,
+      defaultIndexKey,
+      usePresetDefaultIndex,
+      showBackground,
+    } = this.state;
+    let maxScaleItem = this.getSelectedItem(this.maxScaleItems, maxScaleKey);
+    let maxScale = maxScaleItem ? maxScaleItem.value : 3;
+    let spaceItem = this.getSelectedItem(this.spaceItems, spaceKey);
+    let space = spaceItem ? spaceItem.value : 20;
+    let defaultIndexItem = this.getSelectedItem(this.defaultIndexItems, defaultIndexKey);
+    let manualDefaultIndex = defaultIndexItem ? defaultIndexItem.value : 0;
+    let controlProp = false;
+    if (controlKey === 'default') controlProp = true;
+    else if (controlKey === 'custom') controlProp = <CustomAlbumControl />;
     let pressView = this.imageRefs['it' + index];
     pressView.measure((x, y, width, height, pageX, pageY) => {
       let overlayView = (
@@ -89,10 +146,10 @@ export default class AlbumViewExample extends NavigationPage {
         >
           <AlbumView
             style={{flex: 1}}
-            control={true}
+            control={controlProp}
             images={this.images}
             thumbs={this.thumbs}
-            defaultIndex={useControlledMode ? undefined : index}
+            defaultIndex={useControlledMode ? undefined : (usePresetDefaultIndex ? manualDefaultIndex : index)}
             index={useControlledMode ? controlledIndex : undefined}
             maxScale={maxScale}
             space={space}
@@ -152,7 +209,27 @@ export default class AlbumViewExample extends NavigationPage {
   }
 
   renderPage() {
-    let {useControlledMode, controlledIndex, maxScale, space, showBackground, eventLogs} = this.state;
+    let {
+      useControlledMode,
+      controlledIndex,
+      controlKey,
+      maxScaleKey,
+      spaceKey,
+      defaultIndexKey,
+      usePresetDefaultIndex,
+      showBackground,
+      eventLogs,
+    } = this.state;
+    let selectedControl = this.getSelectedItem(this.controlItems, controlKey);
+    let selectedMaxScale = this.getSelectedItem(this.maxScaleItems, maxScaleKey);
+    let selectedSpace = this.getSelectedItem(this.spaceItems, spaceKey);
+    let selectedDefaultIndex = this.getSelectedItem(this.defaultIndexItems, defaultIndexKey);
+    let controlDesc = selectedControl ? selectedControl.label : 'false';
+    let maxScaleDesc = selectedMaxScale ? selectedMaxScale.label : '';
+    let spaceDesc = selectedSpace ? selectedSpace.label : '';
+    let defaultIndexDesc = usePresetDefaultIndex
+      ? (selectedDefaultIndex ? selectedDefaultIndex.label : '0')
+      : '使用点击缩略图索引';
     return (
       <View style={{flex: 1}}>
         <ScrollView style={{flex: 1}}>
@@ -163,27 +240,70 @@ export default class AlbumViewExample extends NavigationPage {
             topSeparator='full'
           />
           {useControlledMode && (
-            <ListRow
-              title='当前索引'
-              detail={controlledIndex.toString()}
-              accessory='none'
+            <SelectRow
+              title='index （受控当前索引）'
+              value={String(controlledIndex)}
+              items={this.defaultIndexItems}
+              getItemValue={item => item.key}
+              getItemText={item => item.label}
+              onSelected={item => this.setState({controlledIndex: item.value})}
             />
           )}
-          <ListRow
+          <SelectRow
+            title='control (控制器)'
+            value={controlKey}
+            items={this.controlItems}
+            getItemValue={item => item.key}
+            getItemText={item => item.label}
+            onSelected={item => this.setState({controlKey: item.key})}
+          />
+          <SelectRow
             title='maxScale (最大缩放)'
-            detail={maxScale.toString()}
-            onPress={() => this.setState({maxScale: maxScale === 3 ? 5 : 3})}
+            value={maxScaleKey}
+            items={this.maxScaleItems}
+            getItemValue={item => item.key}
+            getItemText={item => item.label}
+            onSelected={item => this.setState({maxScaleKey: item.key})}
+          />
+          <SelectRow
+            title='space (图片间隔)'
+            value={spaceKey}
+            items={this.spaceItems}
+            getItemValue={item => item.key}
+            getItemText={item => item.label}
+            onSelected={item => this.setState({spaceKey: item.key})}
           />
           <ListRow
-            title='space (图片间隔)'
-            detail={`${space}px ${space === 80 ? '(大间隔)' : space === 20 ? '(默认)' : ''}`}
-            onPress={() => this.setState({space: space === 20 ? 80 : 20})}
+            title='defaultIndex (开启默认索引)'
+            detail={<Switch value={usePresetDefaultIndex} onValueChange={value => this.setState({usePresetDefaultIndex: value})} />}
+          />
+          <SelectRow
+            title='默认索引值'
+            value={defaultIndexKey}
+            items={this.defaultIndexItems}
+            getItemValue={item => item.key}
+            getItemText={item => item.label}
+            onSelected={item => {
+              if (useControlledMode || !usePresetDefaultIndex) return;
+              this.setState({defaultIndexKey: item.key});
+            }}
           />
           <ListRow
             title='背景色 (显示间隔效果)'
             detail={<Switch value={showBackground} onValueChange={value => this.setState({showBackground: value})} />}
             bottomSeparator='full'
           />
+          <View style={{height: 10}} />
+          <View style={{padding: 10, backgroundColor: '#e3f2fd', marginHorizontal: 10, borderRadius: 5, borderWidth: 1, borderColor: '#bbdefb'}}>
+            <Label style={{fontSize: 12, color: '#1565c0', lineHeight: 18, fontWeight: 'bold'}} text='AlbumView Props 列表（当前配置）' />
+            <Label style={{fontSize: 12, color: '#1a237e', lineHeight: 18}} text='• images: 图片数据数组（已内置 5 张示例）' />
+            <Label style={{fontSize: 12, color: '#1a237e', lineHeight: 18}} text='• thumbs: 缩略图数组（与 images 对应）' />
+            <Label style={{fontSize: 12, color: '#1a237e', lineHeight: 18}} text={`• defaultIndex: ${defaultIndexDesc}`} />
+            <Label style={{fontSize: 12, color: '#1a237e', lineHeight: 18}} text={`• index: ${useControlledMode ? `受控模式，当前 ${controlledIndex}` : '未开启受控模式（index 未传入）'}`} />
+            <Label style={{fontSize: 12, color: '#1a237e', lineHeight: 18}} text={`• maxScale: ${maxScaleDesc || '自定义最大缩放'}`} />
+            <Label style={{fontSize: 12, color: '#1a237e', lineHeight: 18}} text={`• space: ${spaceDesc}`} />
+            <Label style={{fontSize: 12, color: '#1a237e', lineHeight: 18}} text={`• control: ${controlDesc}`} />
+          </View>
           <View style={{height: 10}} />
           <ListRow
             title='打开加载失败示例'
@@ -197,9 +317,8 @@ export default class AlbumViewExample extends NavigationPage {
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='说明：' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• space 是图片左右切换时的间隔距离' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 开启背景色后，拖动切换时可看到深色背景露出的间隔' />
-            <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 设置大间隔(80px)后效果更明显' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 最后一张图片使用无效链接，可触发 onLoadImageFailure 回调' />
-            <Label style={{fontSize: 12, color: '#ff6b6b', lineHeight: 18, fontWeight: 'bold'}} text='• 打开图片时会自动预加载相邻图片，提升浏览流畅度' />
+            <Label style={{fontSize: 12, color: '#ff6b6b', lineHeight: 18, fontWeight: 'bold'}} text='• 打开图片时会自动预加载相邻图片' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='  例如打开第1张图，会同时加载第2张' />
           </View>
           <View style={{height: 10}} />

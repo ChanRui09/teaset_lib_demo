@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Switch} from 'react-native';
 
-import {NavigationPage, Theme, Wheel, ListRow, Label} from 'teaset';
+import {NavigationPage, Theme, Wheel, ListRow, Label, Toast} from 'teaset';
 
 export default class WheelExample extends NavigationPage {
 
@@ -26,9 +26,9 @@ export default class WheelExample extends NavigationPage {
     ];
     Object.assign(this.state, {
       date: new Date(),
-      useHoleStyle: false,
-      useMaskStyle: false,
-      useHoleLine: false,
+  useHoleStyle: false,
+  useMaskStyle: false,
+  holeLineMode: 'default',
       useDefaultIndex: false,
       useItemStyle: false,
     });
@@ -67,7 +67,7 @@ export default class WheelExample extends NavigationPage {
   }
 
   renderPage() {
-    let {date, useHoleStyle, useMaskStyle, useHoleLine, useDefaultIndex, useItemStyle} = this.state;
+  let {date, useHoleStyle, useMaskStyle, holeLineMode, useDefaultIndex, useItemStyle} = this.state;
     let year = date.getFullYear(), month = date.getMonth(), day = date.getDate();
     let daysCount = this.daysCount[this.isLeapYear(year) ? 1 : 0][month];
     let days = [];
@@ -86,9 +86,17 @@ export default class WheelExample extends NavigationPage {
       backgroundColor: 'rgba(63, 81, 181, 0.3)',
     } : undefined;
 
-    let holeLine = useHoleLine ? (
-      <View style={{height: 1, backgroundColor: '#e91e63'}} />
-    ) : undefined;
+    let holeLine;
+    switch (holeLineMode) {
+      case 'number':
+        holeLine = 2;
+        break;
+      case 'element':
+        holeLine = <View style={{height: 2, backgroundColor: '#e91e63'}} />;
+        break;
+      default:
+        holeLine = undefined;
+    }
 
     let itemStyle = useItemStyle ? {
       textAlign: 'center',
@@ -116,7 +124,10 @@ export default class WheelExample extends NavigationPage {
               items={this.years}
               index={useDefaultIndex ? undefined : this.years.indexOf(year)}
               defaultIndex={useDefaultIndex ? this.years.indexOf(year) : undefined}
-              onChange={index => this.onDateChange(this.years[index], month, day)}
+              onChange={index => {
+                this.onDateChange(this.years[index], month, day);
+                Toast.message(`年份切换：${this.years[index]}年`);
+              }}
               />
             <Wheel
               style={{height: 200, width: 80}}
@@ -127,7 +138,11 @@ export default class WheelExample extends NavigationPage {
               items={this.months}
               index={useDefaultIndex ? undefined : this.months.indexOf(month + 1)}
               defaultIndex={useDefaultIndex ? this.months.indexOf(month + 1) : undefined}
-              onChange={index => this.onDateChange(year, this.months[index] - 1, day)}
+              onChange={index => {
+                const selectedMonth = this.months[index] - 1;
+                this.onDateChange(year, selectedMonth, day);
+                Toast.message(`月份切换：${selectedMonth + 1}月`);
+              }}
               />
             <Wheel
               style={{height: 200, width: 80}}
@@ -137,8 +152,12 @@ export default class WheelExample extends NavigationPage {
               holeLine={holeLine}
               items={days}
               index={useDefaultIndex ? undefined : days.indexOf(day)}
-              defaultIndex={useDefaultIndex ? this.months.indexOf(month + 1) : undefined}
-              onChange={index => this.onDateChange(year, month, days[index])}
+              defaultIndex={useDefaultIndex ? days.indexOf(day) : undefined}
+              onChange={index => {
+                const selectedDay = days[index];
+                this.onDateChange(year, month, selectedDay);
+                Toast.message(`日期切换：${selectedDay}日`);
+              }}
               />
           </View>
           <View style={{height: 20}} />
@@ -178,9 +197,22 @@ export default class WheelExample extends NavigationPage {
             detail={<Switch value={useMaskStyle} onValueChange={value => this.setState({useMaskStyle: value})} />}
           />
           <ListRow
-            title='holeLine (分隔线)'
-            detail={<Switch value={useHoleLine} onValueChange={value => this.setState({useHoleLine: value})} />}
+            title='holeLine: 默认样式'
+            accessory={holeLineMode === 'default' ? 'check' : 'none'}
+            topSeparator='full'
+            onPress={() => this.setState({holeLineMode: 'default'})}
+          />
+          <ListRow
+            title='holeLine: 数字高度 (2)'
+            accessory={holeLineMode === 'number' ? 'check' : 'none'}
+            onPress={() => this.setState({holeLineMode: 'number'})}
+          />
+          <ListRow
+            title='holeLine: 自定义元素'
+            detail={holeLineMode === 'element' ? '自定义 View' : null}
+            accessory={holeLineMode === 'element' ? 'check' : 'none'}
             bottomSeparator='full'
+            onPress={() => this.setState({holeLineMode: 'element'})}
           />
           <View style={{height: 10}} />
           <View style={{padding: 10, backgroundColor: '#f5f5f5', marginHorizontal: 10, borderRadius: 5}}>

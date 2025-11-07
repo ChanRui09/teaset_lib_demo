@@ -21,7 +21,6 @@ export default class InputExample extends NavigationPage {
       valueSM: null,
       valueMD: null,
       valueLG: null,
-      valueReadonly: 'Readonly',
       valueDisable: 'Disable true',
       valueCustom: null,
       valueCallback: '',
@@ -62,21 +61,6 @@ export default class InputExample extends NavigationPage {
             onChangeText={text => this.setState({valueLG: text})}
             />
         } bottomSeparator='full' />
-        <View style={{height: 20}} />
-        <ListRow title='Readonly(editable={false})' detail={
-          <Input
-            style={{width: 200}}
-            editable={false}
-            value={this.state.valueReadonly}
-            />
-        } topSeparator='full' />
-        <ListRow title='editable(true)' detail={
-          <Input
-            style={{width: 200}}
-            editable={true}
-            placeholder="editable"
-            />
-        } topSeparator='full' />
         <View style={{height: 20}} />
         <ListRow title='Disabled(true)' detail={
           <Input

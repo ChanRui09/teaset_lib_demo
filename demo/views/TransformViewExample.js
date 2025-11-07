@@ -17,12 +17,17 @@ export default class TransformViewExample extends NavigationPage {
 
   constructor(props) {
     super(props);
+    this.minScaleOptions = [0.25, 0.5, 0.75, 1];
+    this.maxScaleOptions = [1.5, 2, 2.5, 3];
+    this.transformingLogTimeout = null;
     Object.assign(this.state, {
       magnetic: true,
       tension: true,
       containerStyle: null,
       transformInfo: 'x: 0, y: 0, scale: 1',
       eventLogs: [],
+      minScale: 0.5,
+      maxScale: 2.5,
     });
   }
 
@@ -46,15 +51,52 @@ export default class TransformViewExample extends NavigationPage {
     });
   }
 
+  componentWillUnmount() {
+    if (this.transformingLogTimeout) {
+      clearTimeout(this.transformingLogTimeout);
+      this.transformingLogTimeout = null;
+    }
+  }
+
+  cycleMinScale() {
+    let {minScale, maxScale} = this.state;
+    let nextIndex = (this.minScaleOptions.indexOf(minScale) + 1) % this.minScaleOptions.length;
+    let nextValue = this.minScaleOptions[nextIndex];
+    if (nextValue >= maxScale) {
+      nextValue = this.minScaleOptions.find(option => option < maxScale) || minScale;
+    }
+    this.setState({minScale: nextValue});
+  }
+
+  cycleMaxScale() {
+    let {minScale, maxScale} = this.state;
+    let nextIndex = (this.maxScaleOptions.indexOf(maxScale) + 1) % this.maxScaleOptions.length;
+    let nextValue = this.maxScaleOptions[nextIndex];
+    if (nextValue <= minScale) {
+      nextValue = this.maxScaleOptions.find(option => option > minScale) || maxScale;
+    }
+    this.setState({maxScale: nextValue});
+  }
+
+  logTransformingEvent(translateX, translateY, scale) {
+    if (this.transformingLogTimeout) return;
+    this.transformingLogTimeout = setTimeout(() => {
+      this.transformingLogTimeout = null;
+    }, 100);
+    console.log('onTransforming', translateX, translateY, scale);
+    const info = `Transform 进行中: x=${translateX.toFixed(0)}, y=${translateY.toFixed(0)}, scale=${scale.toFixed(2)}`;
+    this.appendEventLog('onTransforming', info);
+  }
+
   renderPage() {
-    let {magnetic, tension, containerStyle, transformInfo} = this.state;
+    let {magnetic, tension, containerStyle, transformInfo, minScale, maxScale} = this.state;
     return (
       <ScrollView style={{flex: 1}}>
         <TransformView
           style={{backgroundColor: Theme.pageColor, height: 350}}
           containerStyle={containerStyle}
-          minScale={0.5}
-          maxScale={2.5}
+          minScale={minScale}
+          maxScale={maxScale}
           magnetic={magnetic}
           tension={tension}
           onWillTransform={(translateX, translateY, scale) => {
@@ -67,9 +109,13 @@ export default class TransformViewExample extends NavigationPage {
             this.setState({
               transformInfo: `x: ${translateX.toFixed(0)}, y: ${translateY.toFixed(0)}, scale: ${scale.toFixed(2)}`
             });
+            this.logTransformingEvent(translateX, translateY, scale);
           }}
           onDidTransform={(translateX, translateY, scale) => {
             console.log('onDidTransform', translateX, translateY, scale);
+            this.setState({
+              transformInfo: `x: ${translateX.toFixed(0)}, y: ${translateY.toFixed(0)}, scale: ${scale.toFixed(2)}`
+            });
             const info = `Transform 结束: x=${translateX.toFixed(0)}, y=${translateY.toFixed(0)}, scale=${scale.toFixed(2)}`;
             this.appendEventLog('onDidTransform', info);
             this.showToast(`Transform 结束 (scale: ${scale.toFixed(2)})`, 1500);
@@ -117,6 +163,16 @@ export default class TransformViewExample extends NavigationPage {
             detail={<Switch value={tension} onValueChange={value => this.setState({tension: value})} />}
           />
           <ListRow
+            title='minScale (最小缩放)'
+            detail={minScale.toFixed(2)}
+            onPress={() => this.cycleMinScale()}
+          />
+          <ListRow
+            title='maxScale (最大缩放)'
+            detail={maxScale.toFixed(2)}
+            onPress={() => this.cycleMaxScale()}
+          />
+          <ListRow
             title='containerStyle (容器样式)'
             detail={containerStyle ? 'border + borderRadius' : '默认'}
             onPress={() => this.setState({containerStyle: containerStyle ? null : {padding: 10, backgroundColor: 'rgba(255,87,34,0.1)'}})}
@@ -143,6 +199,7 @@ export default class TransformViewExample extends NavigationPage {
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='说明：' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 拖动图片可触发 onWillTransform 和 onDidTransform' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 双指缩放图片可改变 scale 值' />
+            <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 点击 minScale / maxScale 行可循环预设缩放范围' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 开启 magnetic 后，拖动到边界会自动回弹' />
             <Label style={{fontSize: 12, color: '#666', lineHeight: 18}} text='• 单击和长按图片会触发对应事件' />
           </View>

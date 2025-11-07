@@ -23,10 +23,16 @@ export default class MenuExample extends NavigationPage {
     this.btn4Ref = React.createRef();
     this.btn5Ref = React.createRef();
     this.btn6Ref = React.createRef();
+    this.directionDownRef = React.createRef();
+    this.directionUpRef = React.createRef();
+    this.directionLeftRef = React.createRef();
+    this.directionRightRef = React.createRef();
     this.iconDemoRef = React.createRef();
     this.titleDemoRef = React.createRef();
     this.shadowRef = React.createRef();
     this.noShadowRef = React.createRef();
+    this.arrowTrueRef = React.createRef();
+    this.arrowFalseRef = React.createRef();
   }
     
   componentWillUnmount() {
@@ -36,83 +42,83 @@ export default class MenuExample extends NavigationPage {
     }
   }
 
-  show(view, align) {
+  getDefaultItems() {
+    return [
+      {title: 'Search', icon: require('../icons/search.png'), onPress: () => alert('Search')},
+      {title: 'Edit', icon: require('../icons/edit.png'), onPress: () => alert('Edit')},
+      {title: 'Remove', icon: require('../icons/trash.png'), onPress: () => alert('Remove')},
+    ];
+  }
+
+  measureAndShow(view, items, options = {}) {
+    if (!view || !view.measure) {
+      return;
+    }
     view.measure((x, y, width, height, pageX, pageY) => {
-      let items = [
-        {title: 'Search', icon: require('../icons/search.png'), onPress: () => alert('Search')},
-        {title: 'Edit', icon: require('../icons/edit.png'), onPress: () => alert('Edit')},
-        {title: 'Remove', icon: require('../icons/trash.png'), onPress: () => alert('Remove')},
-      ];
-      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items, {align});
+      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items, options);
     });
+  }
+
+  show(view, align) {
+    this.measureAndShow(view, this.getDefaultItems(), {align});
   }
 
   showIconTypes(view) {
-    view.measure((x, y, width, height, pageX, pageY) => {
-      let items = [
-        {title: '带图片图标', icon: require('../icons/search.png'), onPress: () => alert('Image icon')},
-        {title: '空图标 (empty)', icon: 'empty', onPress: () => alert('Empty icon')},
-        {title: '无图标 (none)', icon: 'none', onPress: () => alert('None icon')},
-        {
-          title: '自定义组件图标',
-          icon: (
-            <View style={{width: 20, height: 20, backgroundColor: '#4CAF50', borderRadius: 10, marginRight: 8, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{color: 'white', fontSize: 12, fontWeight: 'bold'}}>✓</Text>
-            </View>
-          ),
-          onPress: () => alert('Custom icon')
-        },
-      ];
-      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items);
-    });
+    const items = [
+      {title: '带图片图标', icon: require('../icons/search.png'), onPress: () => alert('Image icon')},
+      {title: '空图标 (empty)', icon: 'empty', onPress: () => alert('Empty icon')},
+      {title: '无图标 (none)', icon: 'none', onPress: () => alert('None icon')},
+      {
+        title: '自定义组件图标',
+        icon: (
+          <View style={{width: 20, height: 20, backgroundColor: '#4CAF50', borderRadius: 10, marginRight: 8, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{color: 'white', fontSize: 12, fontWeight: 'bold'}}>✓</Text>
+          </View>
+        ),
+        onPress: () => alert('Custom icon')
+      },
+    ];
+    this.measureAndShow(view, items);
   }
 
   showCustomTitle(view) {
-    view.measure((x, y, width, height, pageX, pageY) => {
-      let items = [
-        {
-          title: (
-            <View>
-              <Text style={{fontSize: 16, fontWeight: 'bold', color: Theme.menuItemTitleColor}}>主标题</Text>
-              <Text style={{fontSize: 12, color: '#999'}}>副标题文字</Text>
-            </View>
-          ),
-          icon: require('../icons/search.png'),
-          onPress: () => alert('多行标题')
-        },
-        {
-          title: (
-            <Text style={{fontSize: 16, color: '#FF5722', fontWeight: 'bold'}}>删除操作</Text>
-          ),
-          icon: require('../icons/trash.png'),
-          onPress: () => alert('自定义样式')
-        },
-        {title: '普通标题', icon: require('../icons/edit.png'), onPress: () => alert('普通')},
-      ];
-      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items);
-    });
+    const items = [
+      {
+        title: (
+          <View>
+            <Text style={{fontSize: 16, fontWeight: 'bold', color: Theme.menuItemTitleColor}}>主标题</Text>
+            <Text style={{fontSize: 12, color: '#999'}}>副标题文字</Text>
+          </View>
+        ),
+        icon: require('../icons/search.png'),
+        onPress: () => alert('多行标题')
+      },
+      {
+        title: (
+          <Text style={{fontSize: 16, color: '#FF5722', fontWeight: 'bold'}}>删除操作</Text>
+        ),
+        icon: require('../icons/trash.png'),
+        onPress: () => alert('自定义样式')
+      },
+      {title: '普通标题', icon: require('../icons/edit.png'), onPress: () => alert('普通')},
+    ];
+    this.measureAndShow(view, items);
   }
 
   showWithShadow(view) {
-    view.measure((x, y, width, height, pageX, pageY) => {
-      let items = [
-        {title: 'Search', icon: require('../icons/search.png'), onPress: () => alert('Search')},
-        {title: 'Edit', icon: require('../icons/edit.png'), onPress: () => alert('Edit')},
-        {title: 'Remove', icon: require('../icons/trash.png'), onPress: () => alert('Remove')},
-      ];
-      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items, {shadow: true});
-    });
+    this.measureAndShow(view, this.getDefaultItems(), {shadow: true});
   }
 
   showWithoutShadow(view) {
-    view.measure((x, y, width, height, pageX, pageY) => {
-      let items = [
-        {title: 'Search', icon: require('../icons/search.png'), onPress: () => alert('Search')},
-        {title: 'Edit', icon: require('../icons/edit.png'), onPress: () => alert('Edit')},
-        {title: 'Remove', icon: require('../icons/trash.png'), onPress: () => alert('Remove')},
-      ];
-      this.overlayKey = Menu.show({x: pageX, y: pageY, width, height}, items, {shadow: false});
-    });
+    this.measureAndShow(view, this.getDefaultItems(), {shadow: false});
+  }
+
+  showWithDirection(view, direction) {
+    this.measureAndShow(view, this.getDefaultItems(), {direction});
+  }
+
+  showWithArrow(view, showArrow) {
+    this.measureAndShow(view, this.getDefaultItems(), {showArrow});
   }
 
   renderPage() {
@@ -120,8 +126,11 @@ export default class MenuExample extends NavigationPage {
       <ScrollView style={{flex: 1}}>
         <View style={{height: 20}} />
         
-        <Label type='detail' size='xl' text='基本用法 - align 对齐方式' />
+        <Label type='detail' size='md' text='基本用法 - align 对齐方式' style={{ fontWeight: 'bold', color: '#000' }} />
         <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          align 属性演示 - 控制菜单相对触发视图的水平对齐方式 (start/center/end)
+        </Text>
         <View style={{height: 60, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
           <Button title='Start' ref={this.btn1Ref} onPress={() => this.show(this.btn1Ref.current, 'start')} />
           <Button title='Center' ref={this.btn2Ref} onPress={() => this.show(this.btn2Ref.current, 'center')} />
@@ -135,25 +144,26 @@ export default class MenuExample extends NavigationPage {
         </View>
         
         <View style={{height: 30}} />
-        <Label type='detail' size='xl' text='icon 图标类型' />
+        <Label type='detail' size='md' text='direction 弹出方向' style={{ fontWeight: 'bold', color: '#000' }} />
         <View style={{height: 10}} />
-        <View style={{
-          backgroundColor: '#f0f0f0',
-          padding: 15,
-          margin: 10,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: '#ccc'
-        }}>
-          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
-            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
-            • icon: 图标，支持多种类型{'\n'}
-            • 'none': 无图标{'\n'}
-            • 'empty': 空图标，显示为空白并占用图标大小的空间{'\n'}
-            • Image.source: 图片资源（require 或 {'{'}uri: '...'{'}'}）{'\n'}
-            • React Element: 自定义组件
-          </Text>
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          direction 属性演示 - 控制菜单从触发点的弹出方向 (down/up/left/right)
+        </Text>
+        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginBottom: 12}}>
+          <Button title='Down' ref={this.directionDownRef} onPress={() => this.showWithDirection(this.directionDownRef.current, 'down')} />
+          <Button title='Up' ref={this.directionUpRef} onPress={() => this.showWithDirection(this.directionUpRef.current, 'up')} />
         </View>
+        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <Button title='Left' ref={this.directionLeftRef} onPress={() => this.showWithDirection(this.directionLeftRef.current, 'left')} style={{marginRight: 24}} />
+          <Button title='Right' ref={this.directionRightRef} onPress={() => this.showWithDirection(this.directionRightRef.current, 'right')} />
+        </View>
+
+        <View style={{height: 30}} />
+        <Label type='detail' size='md' text='icon 图标类型' style={{ fontWeight: 'bold', color: '#000' }} />
+        <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          icon 属性演示 - 支持字符串枚举 (none/empty)、图片资源，以及自定义组件
+        </Text>
         <View style={{alignItems: 'center', marginTop: 10}}>
           <Button 
             title='图标类型演示' 
@@ -164,23 +174,11 @@ export default class MenuExample extends NavigationPage {
         </View>
         
         <View style={{height: 20}} />
-        <Label type='detail' size='xl' text='title 作为组件' />
+        <Label type='detail' size='md' text='title 作为组件' style={{ fontWeight: 'bold', color: '#000' }} />
         <View style={{height: 10}} />
-        <View style={{
-          backgroundColor: '#f0f0f0',
-          padding: 15,
-          margin: 10,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: '#ccc'
-        }}>
-          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
-            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
-            • title: 标题，可以是字符串、数字或 React Native 组件{'\n'}
-            • 使用组件可以实现多行标题、自定义颜色、样式等{'\n'}
-            • 本示例展示了主副标题和自定义颜色标题
-          </Text>
-        </View>
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          title 属性演示 - 标题可为字符串、数字或 React 组件，实现多行与自定义样式
+        </Text>
         <View style={{alignItems: 'center', marginTop: 10}}>
           <Button 
             title='自定义 Title 组件' 
@@ -191,24 +189,11 @@ export default class MenuExample extends NavigationPage {
         </View>
         
         <View style={{height: 20}} />
-        <Label type='detail' size='xl' text='shadow 阴影' />
+        <Label type='detail' size='md' text='shadow 阴影' style={{ fontWeight: 'bold', color: '#000' }}/>
         <View style={{height: 10}} />
-        <View style={{
-          backgroundColor: '#f0f0f0',
-          padding: 15,
-          margin: 10,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: '#ccc'
-        }}>
-          <Text style={{fontSize: 14, color: '#666', lineHeight: 20}}>
-            <Text style={{fontWeight: 'bold'}}>说明：</Text>{'\n'}
-            • shadow: 是否显示阴影，默认值 true{'\n'}
-            • shadow=true 时，菜单会有阴影效果{'\n'}
-            • shadow=false 时，菜单无阴影{'\n'}
-            • Android 平台此属性无效果
-          </Text>
-        </View>
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          shadow 属性演示 - 控制 iOS 上菜单阴影的显示 (true/false)
+        </Text>
         <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 10}}>
           <Button 
             title='有阴影' 
@@ -219,6 +204,25 @@ export default class MenuExample extends NavigationPage {
             title='无阴影' 
             ref={this.noShadowRef}
             onPress={() => this.showWithoutShadow(this.noShadowRef.current)}
+          />
+        </View>
+
+        <View style={{height: 20}} />
+        <Label type='detail' size='md' text='showArrow 箭头' style={{ fontWeight: 'bold', color: '#000' }}/>
+        <View style={{height: 10}} />
+        <Text style={{marginLeft: 20, marginRight: 20, color: '#999', fontSize: 12, lineHeight: 18}}>
+          showArrow 属性演示 - 控制是否显示气泡箭头 (true/false)
+        </Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 10}}>
+          <Button 
+            title='显示箭头' 
+            ref={this.arrowTrueRef}
+            onPress={() => this.showWithArrow(this.arrowTrueRef.current, true)}
+          />
+          <Button 
+            title='隐藏箭头' 
+            ref={this.arrowFalseRef}
+            onPress={() => this.showWithArrow(this.arrowFalseRef.current, false)}
           />
         </View>
         
